@@ -1,0 +1,493 @@
+@charset "utf-8";
+
+/*=====================================================
+ * Description:PC　旅程テーブル、ANA My Choice
+ * Version: 0.13
+ * Last Up Date: 2016/06/22
+=====================================================*/
+
+
+
+/*-----  contents -------
+
+	 1: 予約詳細
+	 2: 予約完了
+	 3: 解約内容確認
+	 4: ANA My Choice
+
+----------------------*/
+
+
+/*1:予約詳細
+=================================*/
+.itinerary {
+	margin-top: 14px;
+	border-bottom: #cccccc 1px solid;
+}
+.itinerary > tbody > tr > td {
+	padding: 0;
+}
+.itinerary .dateBlock .dateBlockSection { position: relative; }
+.itinerary .dateBlock .itinerarySectionCover {
+	top: 0;
+	padding: 0;
+}
+.itinerary .itineraryDateCell { width: 85px; }
+.itinerary .itineraryDepArr { width: 275px; }
+.itinerary .itineraryFlightNumber { width: 75px; }
+.itinerary .itinerarySeatClass { width: 76px; }
+.itinerary .itineraryFare { width: 114px; }
+.itinerary .itineraryFare ul li+li { margin-top: 10px; }
+.itinerary .itineraryBorardingGate { width: 97px; }
+.itinerary .itineraryFrightGuidance { width: 64px; }
+.itinerary .itineraryRsvNo { width: 86px; }
+.itinerary > thead > tr > th {
+	padding: 0 0 6px 10px;
+	text-align: left;
+}
+.itinerary td.dateBlock table > tbody > tr > th {
+	padding: 10px;
+	width: 75px;
+	background: #eeeeee;
+	border-top: #cccccc 1px solid;
+	vertical-align: top;
+	text-align: left;
+}
+.itinerary td.dateBlock table > tbody > tr > th.itineraryDateCell em {
+	display: block;
+	font-size: 115%;
+	font-weight: bold;
+}
+.itinerary td.dateBlock table > tbody > tr > th.itineraryDateCell span {
+	display: block;
+	font-size: 108%;
+	font-weight: normal;
+}
+.itinerary > tbody td > .dateBlockSection > table > tbody > tr > td {
+	padding: 13px 0 13px 10px; /* IEのズレ解消のために旅程の上下パディングは13pxとします。 */
+	border-top: #cccccc 1px solid;
+	font-size: 108%;
+}
+.itinerary > tbody td > .dateBlockSection > table > tbody > tr > td.itineraryRsvNo {
+	font-weight: bold;
+}
+.itinerary > tbody td > .dateBlockSection > table > tbody > tr > td.itineraryRsvNo em {
+	color: #d14704;
+	font-size: 153%;
+	font-weight: bold;
+}
+.itinerary > tbody td > .dateBlockSection > table > tbody > tr.hasItineraryTxt > td {
+	padding-bottom: 8px;
+}
+.itinerary > tbody td > .dateBlockSection > table > tbody > tr > td.itineraryTxt {
+	padding: 0 10px 8px;
+	border-top: none;
+	color: #e80000;
+}
+
+/* .itineraryRouteはテーブル入れ子で利用 */
+.itineraryRoute tbody td {
+	padding: 0; /* デフォルトのpaddingリセット */
+	font-size: 115%;
+	font-weight: bold;
+	text-align: left;
+}
+.itineraryRoute tbody tr + tr td { padding-top: 7px; }
+.itineraryRoute .time {
+	width: 60px;
+	vertical-align: top;
+}
+
+/* 予約詳細 accessibility */
+.itinerary.accessibility > tbody > tr > th {
+	border-top: #cccccc 1px solid;
+	padding: 10px;
+	background: #eeeeee;
+	text-align: left;
+	vertical-align: top;
+}
+.itinerary.accessibility > tbody > tr > th.itineraryDateCell {
+	width: 75px;
+}
+.itinerary.accessibility > tbody > tr > .itineraryDateCell em {
+	display: block;
+	font-size: 115%;
+	font-weight: bold;
+}
+.itinerary.accessibility > tbody > tr > th .week {
+	display: block;
+	font-size: 93%;
+	font-weight: normal;
+}
+.itinerary.accessibility > tbody > tr > td {
+	border-top: #cccccc 1px solid;
+	padding: 13px 0 13px 10px;
+	font-size: 108%;
+}
+.itinerary.accessibility > tbody > tr > td .flightDepArr .flightDep,
+.itinerary.accessibility > tbody > tr > td .flightDepArr .flightArr {
+	font-size: 115%;
+	font-weight: bold;
+	overflow: hidden;
+}
+.itinerary.accessibility > tbody > tr > td .flightDepArr .flightArr {
+	margin-top: 7px;
+}
+.itinerary.accessibility > tbody > tr > td .flightDepArr .time {
+	float: left;
+	display: block;
+	width: 60px;
+}
+.itinerary.accessibility > tbody > tr > td .flightDepArr .airport {
+	display: block;
+	overflow: hidden;
+}
+.itinerary.accessibility .otherFare th,
+.itinerary.accessibility .otherFare td {
+	border-top: none;
+	padding: 0 0 13px 10px;
+}
+.itinerary.accessibility > tbody > tr > td.itineraryRsvNo {
+	font-weight: bold;
+}
+.itinerary.accessibility > tbody > tr > td.itineraryRsvNo em {
+	color: #d14704;
+	font-size: 153%;
+	font-weight: bold;
+}
+.itinerary.accessibility > tbody > tr.hasItineraryTxt > td {
+	padding-bottom: 8px;
+}
+.itinerary.accessibility > tbody > tr > td.itineraryTxt {
+	padding: 0 10px 8px;
+	border-top: none;
+	color: #e80000;
+}
+
+.itinerary.accessibility > tbody > tr > td.attentionCell {
+	padding: 0 10px 8px;
+	border-top: none;
+	background: #eeeeee;
+}
+.itinerary.accessibility > tbody > tr > td .attentionTxt {
+	padding: 5px 10px;
+	background: #ffe1bf;
+	font-weight: bold;
+}
+.itinerary.accessibility > tbody > tr > td .attentionTxt a {
+	color: #252525;
+}
+.itinerary.accessibility > tbody > tr.disabledFlight th {
+	color: #c7c7c7;
+}
+.itinerary.accessibility > tbody > tr.disabledFlight td {
+	background: #eeeeee;
+	color: #c7c7c7;
+}
+.itinerary.accessibility > tbody > tr.disabledFlight td a,
+.itinerary.accessibility > tbody > tr.disabledFlight > td.itineraryRsvNo em,
+.itinerary.accessibility > tbody > tr.disabledFlight > td .attention,
+.itinerary.accessibility > tbody > tr.disabledFlight > td .anaWings {
+	color: #c7c7c7;
+}
+.itinerary.accessibility > tbody > tr.disabledFlight img {
+	opacity: 0.3;
+}
+
+
+/* 旅程を共有table */
+.shareReservation th {
+	width: 102px;
+	padding: 33px 10px 0;
+	background: #ffffff;
+	border-bottom: #cccccc 1px solid;
+	font-size: 108%;
+	text-align: left;
+	vertical-align: top;
+}
+.shareReservation td {
+	padding: 15px 0;
+	border-bottom: #cccccc 1px solid;
+}
+.shareReservation td div {
+	position: relative;
+	overflow: hidden;
+}
+.shareReservation .sendSchedule { width: 475px; }
+.shareReservation .sendSchedule:after {
+	content : '';
+	display : block;
+	clear : both;
+}
+.shareReservation .sendSchedule li {
+	float: left;
+	margin-right: 10px;
+}
+.shareReservation .sendSchedule li a {
+	display: block;
+	width: 85px;
+	height: 51px;
+	text-indent: -9999px;
+}
+.shareReservation .sendSchedule .iconGcal { background: url(../../image/btn/btn_gcal.png?63915f1) left top no-repeat; }
+.shareReservation .sendSchedule .iconAcal { background: url(../../image/btn/btn_acal.png?199486b) left top no-repeat; }
+.shareReservation .sendSchedule .iconOutlook { background: url(../../image/btn/btn_outlook.png?001f910) left top no-repeat; }
+.shareReservation .sendSchedule .iconApp { background: url(../../image/btn/btn_ana_app.png?77d9012) left top no-repeat; }
+.shareReservation .sendSchedule .iconEmail { background: url(../../image/btn/btn_email.png?c2131ac) left top no-repeat; }
+.shareReservation .upgradeFlight {
+	position: absolute;
+	top: 0;
+	right: 10px;
+}
+
+.emailSend {
+	display: none;
+	margin: 15px 10px 0 0;
+	padding: 9px;
+	border: #cccccc 1px solid;
+	background: #eeeeee;
+}
+.emailSend:after {
+	content : '';
+	display : block;
+	clear : both;
+}
+.emailSend dt {
+	float: left;
+	margin-right: 10px;
+	padding-top: 8px;
+}
+.emailSend .inputSetList,
+.emailSend .inputSetList li { display: inline; }
+.emailSend .inputSetList li+li { margin-left: 6px;}
+.emailSend .inputSetList .widthMail { width: 340px; }
+.emailSendArrow {
+	display: none;
+	position: absolute;
+	top: 54px;
+	left: 37px;
+}
+/* chromeハック */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.emailSendArrow {
+		top: 55px;
+	}
+}
+.emailSend .btnBase {
+	margin: 0 0 0 5px;
+	font-size: 100%;
+}
+
+/* 旅程を共有table accessibility */
+.accessibility.shareReservation td div {
+	overflow: visible;
+}
+.accessibility.shareReservation .sendSchedule {
+	letter-spacing: -.4em;
+}
+.accessibility.shareReservation .sendSchedule:after {
+	display: none;
+}
+.accessibility.shareReservation .sendSchedule li {
+	float: none;
+	display: inline-block;
+	vertical-align: top;
+	letter-spacing: normal;
+	margin-right: 10px;
+}
+.accessibility.shareReservation .sendSchedule li a {
+	text-indent: 0;
+	overflow: hidden;
+	position: relative;
+}
+.accessibility.shareReservation .sendSchedule li a:focus {
+	outline: 2px solid #90bdf3;
+}
+.accessibility.shareReservation .sendSchedule .iconGcal { background: none; }
+.accessibility.shareReservation .sendSchedule .iconAcal { background: none; }
+.accessibility.shareReservation .sendSchedule .iconOutlook { background: none; }
+.accessibility.shareReservation .sendSchedule .iconApp { background: none; }
+.accessibility.shareReservation .sendSchedule .iconEmail { background: none; }
+.accessibility.shareReservation .sendSchedule li a img{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.accessibility.shareReservation .sendSchedule .iconEmail.is-open img{
+	position: absolute;
+	top: auto;
+	bottom: 0;
+}
+
+
+/* 座席指定 */
+.skipService {
+	position: relative;
+}
+.skipService span {
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	color: #252525;
+	font-size: 65%;
+	font-weight: normal;
+}
+/* 座席指定 accessibility */
+.accessibility.skipService span.informationIcon,
+.accessibility.skipService span.externalLinkIcon {
+	position: static;
+}
+
+
+/* 発着通知メール */
+table.tableColumn tr.noBottomLine td {
+	padding-bottom: 0;
+	border-bottom: none;
+}
+table.tableColumn tr.noBottomLine+tr td {
+	border-top: none;
+}
+
+
+
+/*2:予約完了
+=================================*/
+.supportMenu {
+	margin-top: 15px;
+	border-top: #cccccc 1px solid;
+}
+.supportMenu li {
+	display: table;
+	width: 100%;
+	border-bottom: #cccccc 1px solid;
+}
+.supportMenu .supportMenuContents {
+	display: table-cell;
+	padding: 10px 0 10px 10px;
+	width: 77%;
+	vertical-align: middle;
+}
+.supportMenu .btnSupportMenu {
+	display: table-cell;
+	padding: 10px;
+	width: 23%;
+	text-align: right;
+	vertical-align: middle;
+}
+.supportMenu .supportMenuContents dt {
+	color: #012f64;
+	font-size: 123%;
+	font-weight: bold;
+}
+.supportMenu .supportMenuContents dd {
+	margin-top: 5px;
+	font-size: 108%;
+}
+
+.atColumnArea {
+	margin-top: 15px;
+	*zoom: 1; /* IE hack */
+}
+.atColumnArea+.atColumnArea { margin-top: 20px; }
+.atColumnArea:after {
+	content : '';
+	display : block;
+	clear : both;
+}
+.atColumnArea>div {
+	display: table;
+	padding: 10px;
+	background: #e4eef9;
+}
+.atColumn2>div {
+	width: 446px;
+	float: left;
+}
+.atColumn2>div+div {
+	margin-left: 18px;
+}
+.atColumn3>div {
+	width: 284px;
+	float: left;
+}
+.atColumn3>div+div {
+	margin-left: 19px;
+}
+.atColumn1 .atColumnImage,
+.atColumn2 .atColumnImage {
+	display: table-cell;
+	width: 180px;
+	vertical-align: middle;
+	line-height: 0;
+}
+.atColumn3 .atColumnImage { text-align: center; }
+.atColumn1 .atColumnContents,
+.atColumn2 .atColumnContents {
+	display: table-cell;
+	padding-left: 10px;
+	vertical-align: middle;
+}
+.atColumn3 .atColumnContents { margin-top: 5px; }
+.atColumnContents dt {
+	color: #012f64;
+	font-size: 123%;
+	font-weight: bold;
+}
+.atColumnContents dd {
+	margin-top: 5px;
+	font-size: 108%;
+}
+.atColumnLink {
+	margin-top: 3px;
+	padding-left: 18px;
+	background: url("../../image/icon/icon_arrow_03.png?cb0f8bc") no-repeat left 0.25em;
+}
+.atColumnLink a {
+    font-size: 108%;
+}
+
+
+
+/*3: 解約内容確認
+=================================*/
+.cancelConfirm .itinerarySeatClass { width: 150px; }
+.cancelConfirm .itineraryFare { width: 220px; }
+.cancelConfirm.hasLimit .itinerarySeatClass { width: 141px; }
+.cancelConfirm.hasLimit .itineraryFare { width: 220px; }
+.cancelConfirm.hasLimit .itineraryLimit { width: 180px; }
+.cancelConfirm > tbody td > .dateBlockSection > table > tbody > tr > td.itineraryRsvNo {
+	color: #525252;
+	font-size: 108%;
+}
+.cancelConfirm .itineraryRsvNo em {
+	color: #d14704;
+	font-size: 143%;
+	font-weight: bold;
+}
+
+
+/* 特典_変更 */
+.itinerary.privilegeFlightChange .itinerarySeatClass { width: 131px; }
+.itinerary.privilegeFlightChange .itineraryFare { width: 144px; }
+.itinerary.privilegeFlightChange .itinerarySeason { width: 75px; }
+
+
+
+/*4: ANA My Choice
+=================================*/
+.myChoiceList { border-bottom: #d8d8d8 1px solid; }
+.myChoiceList .myChoiceDetail {
+	display: table;
+	margin: 10px 10px 30px;
+}
+.myChoiceList .myChoiceDetail p {
+	display: table-cell;
+	vertical-align: middle;
+}
+.myChoiceList .myChoiceDetail .myChoiceImage { width: 60px; line-height: 0; }
+.myChoiceList .myChoiceDetail .myChoiceText {
+	width: 660px;
+	font-size: 108%;
+}
+.myChoiceList .myChoiceDetail .btnAreaBlockRelated { width: 210px; }
+

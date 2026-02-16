@@ -1,0 +1,85 @@
+/**
+ * @fileoverview 「aswbed_switchingtab_utility.js」タブで表示を切り替えるときに使用します
+ *
+ * @require  jQuery1.8.3
+ * @version  0.02
+ * @update   2015/10/22
+ */
+
+
+/**
+ * @namespace ASW共通のオブジェクト<br>
+ */
+var Aswbed = Aswbed || {};
+
+
+/**
+ * タブボタンで表示を切り替えるメソッド(汎用)<br>
+ *
+ * HTML設置例）
+ * <code>
+ *   Aswbed.switchingTabSetting("#tabmenuStatusData", ['#buttonOneWay', '#buttonRoundTrip'], [['.btnReverse'], ['.returnpathDepDate']]);
+ * </code>
+ *
+ * @param {string} saveDataField タブのボタンのID名を保持する隠しフィールドのjQueryセレクタ名<br>
+ * @param {array} buttonArray 表示と非表示を切り替えるボタンのjQueryセレクタ名。複数設定できるように、セレクタ名の文字列が入った配列で設定する。<br>
+ * @param {array} dispalayArray 表示と非表示を切り替える対象のjQueryセレクタ名。各ボタンを押した時に複数設定できるように、セレクタ名の文字列が2重の配列として設定する。<br>
+ */
+Aswbed.switchingTabSetting = function (saveDataField, buttonArray, dispalayArray) {
+    'use strict';
+    
+    var $saveDataField = $(Aswbed.escapeForIdSelectorString(saveDataField));
+    var $pageInfomationData = $('.pageInfomationData');
+    var i;
+    var j;
+    var k;
+    var m;
+    var n;
+    var p; //for文用
+    var $button;
+    
+
+    for (i = 0, j = buttonArray.length; i < j; i++) {
+
+        $button = $(Aswbed.escapeForIdSelectorString(buttonArray[i]));
+        $button.attr('data-buttonId', i);
+
+        $button.on('click', function () {
+            if ($(this).hasClass('disabled')) {
+                return false;
+            }
+            
+            for (k = 0, m = buttonArray.length; k < m; k++) {
+                $(Aswbed.escapeForIdSelectorString(buttonArray[k])).removeClass('selected');
+            }
+            for (k = 0, m = dispalayArray.length; k < m; k++) {
+                for (n = 0, p = dispalayArray[k].length; n < p; n++) {
+                    $(Aswbed.escapeForIdSelectorString(dispalayArray[k][n])).hide();
+                }
+            }
+            var id = parseInt($(this).attr('data-buttonId'), 10);
+            $pageInfomationData.val(id);
+            $(Aswbed.escapeForIdSelectorString(buttonArray[id])).addClass('selected');
+            for (n = 0, p = dispalayArray[id].length; n < p; n++) {
+                $(Aswbed.escapeForIdSelectorString(dispalayArray[id][n])).show();
+            }
+            $saveDataField.val('#' + this.id);
+            return false;
+        });
+
+    }
+
+    //$saveDataFieldに値がなければ「buttonArray」の最初の要素を設定する
+    if ($saveDataField.val() === null || $saveDataField.val() === '') {
+        $saveDataField.val(buttonArray[0]);
+    }
+    //復元処理
+   setTimeout(function(){ $($saveDataField.val()).trigger('click')},1);;
+    
+};
+
+
+
+
+
+

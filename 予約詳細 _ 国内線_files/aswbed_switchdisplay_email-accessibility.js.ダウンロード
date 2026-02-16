@@ -1,0 +1,26 @@
+/**
+ * @fileoverview 【実行文】「予約詳細」（00010）で「フライト」タブ表示時にある「Email」の入う力フィールド表示・非表示を切り替える
+ *
+ * @require  jQuery1.8.3
+ * @version  0.01
+ * @update   2019/5/22
+ */
+$(function () {
+    'use strict';
+    
+    Aswbed.emailFormSwith = function(_this, toggleObj, openAltText, closeAltText){
+        var $target = $(Aswbed.escapeForIdSelectorString(_this))
+        var triggerText = [openAltText, closeAltText];
+        if($target.hasClass('is-open')) {
+            $target.removeClass('is-open');
+            toggleObj.hide();
+            $target.children().attr('alt', triggerText[0]);
+        } else {
+            $target.addClass('is-open');
+            toggleObj.show();
+            $target.children().attr('alt', triggerText[1]);
+            toggleObj.find('#mailSelect').focus();
+        }
+    }
+
+});

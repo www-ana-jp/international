@@ -1,0 +1,387 @@
+/*=====================================================
+* Script Name: code_to_paste_dms_AppM.js
+* Description: AA SCode 国内BE PC
+* S_CODEグループ: 4
+* File No: CTP-003-PC
+* Version: 1.0
+* Version: 1.1 RS複数対応
+* Version: 1.5 実装手順書_20210415対応
+* Version: 1.6 実装手順書_20211005対応
+* Version: 1.7 実装手順書_20211206対応(3.3.2)
+* Version: 1.8 実装手順書_20211101対応(全適用) (3.3.25対応)
+* Version: 1.9 実装手順書_20220211対応(anakokunai) (3.3.2対応)
+* Version: 1.10 実装手順書_20220222対応(s2.charSet&コードバージョン計測の追加) (3.7対応)
+* Version: 1.2 Adobe Cookie対応 削除対応
+* Last Up Date: 2024/08/01
+=====================================================*/
+
+/* 2008020811150735 */
+
+// [Adobe] function Delete
+
+// [Adobe] Marged Override function Start
+/******************************
+ *SCGetDateTimeSec
+ *FUNC:0 -> Rt:YYYY/MM/DD HH:MM:SS
+ *FUNC:1 -> Rt:DD
+ *FUNC:2 -> Rt:YYYYMMDD
+ ******************************/
+//function SCGetDateTimeSec(func) {
+//  var RtTime = '';
+//  var date = new Date();
+//  var strYear = date.getFullYear();
+//  var strMonth = ZeroFormat(date.getMonth() + 1, 2);
+//  var strDay = ZeroFormat(date.getDate(), 2);
+//  var strHour = ZeroFormat(date.getHours(), 2);
+//  var strMin = ZeroFormat(date.getMinutes(), 2);
+//  var strSec = ZeroFormat(date.getSeconds(), 2);
+//  if (func == 0) {
+//    RtTime =
+//      strYear +
+//      '/' +
+//      strMonth +
+//      '/' +
+//      strDay +
+//      ' ' +
+//      strHour +
+//      ':' +
+//      strMin +
+//      ':' +
+//      strSec;
+//  } else if (func == 1) {
+//    RtTime = strHour;
+//  } else {
+//    RtTime = strYear + strMonth + strDay;
+//  }
+//  return RtTime;
+//}
+//
+//// [Adobe] Marged Override function End
+//
+///******************************
+// *SiteCatalyst
+// ******************************/
+//SiteCatalystDateTimeSec = SCGetDateTimeSec(0);
+//SiteCatalystTime = SCGetDateTimeSec(1);
+//SiteCatalystReferrerResult = SCGetReferrer();
+//SiteCatalystCookie0 = SCDevideUniqueCookie(0, SCGetCookieStr('unique'));
+//SiteCatalystCookie1 = SCDevideUniqueCookie(1, SCGetCookieStr('unique'));
+//SiteCatalystCookie2 = SCDevideUniqueCookie(2, SCGetCookieStr('unique'));
+//SiteCatalystCookie3 = SCDevideUniqueCookie(3, SCGetCookieStr('unique'));
+//SiteCatalystCookie4 = SCDevideUniqueCookie(4, SCGetCookieStr('unique'));
+//SiteCatalystMember = SCGetMemberJudge();
+//SiteCatalystDomain = SCGetDomainFromURL();
+//SiteCatalystErrID = SCGetErrID();
+//SiteCatalystUUCount = SCGetUUReport();
+//SiteCatalystEvent = SCGetPurchaseData();
+//SiteCatalystProduct = SCGetProductData();
+//SiteCatalystPurchaseCode = SCGetPurchaseID();
+//
+///******************************
+// *2016-01-28
+// ******************************/
+//SiteCatalystRequest1 =
+//  's:' +
+//  SiteCatalystSegCount +
+//  SegInfo(SiteCatalystSegInfo1, 1) +
+//  SegInfo(SiteCatalystSegInfo2, 2) +
+//  SegInfo(SiteCatalystSegInfo3, 3) +
+//  SegInfo(SiteCatalystSegInfo4, 4);
+//
+///******************************
+// *2016-01-28
+// ******************************/
+//SiteCatalystRequest2 =
+//  'pax:' +
+//  SiteCatalystPaxCount +
+//  ',coa:' +
+//  SiteCatalystCountOfAdult +
+//  ',coc:' +
+//  SiteCatalystCountOfChild +
+//  ',coi:' +
+//  SiteCatalystCountOfInfant;
+//
+///******************************
+// *2016-01-28
+// ******************************/
+//SiteCatalystRequest3 = AgeMileageJoin(
+//  SiteCatalystPaxAgeAndGender,
+//  SiteCatalystMileageProgram,
+//);
+//
+///* You may give each page an identifying name, server, and channel on
+//the next lines. */
+//s.charSet = SiteCatalystCharSet;
+///* E-commerce Variables */
+//s.pageName = SiteCatalystPageName;
+//s.server = SiteCatalystDomain;
+//s.channel = SiteCatalystChannel;
+//s.prop1 = SiteCatalystMember;
+//s.prop2 = SiteCatalystCookie3;
+//s.prop3 = SiteCatalystCookie4;
+//s.prop4 = SiteCatalystCookie2;
+//s.prop5 = SiteCatalystCookie1;
+//s.prop6 = SiteCatalystTime;
+//s.prop7 = SiteCatalystComponentView;
+//s.prop8 = SiteCatalystReferrerResult;
+//
+//s.prop11 = SiteCatalystErrID;
+//s.prop12 = '';
+//s.prop13 = SiteCatalystCookie0;
+//s.prop14 = SiteCatalystDateTimeSec;
+//s.prop38 = SiteCatalystSeatAvailabilityDMS;
+//s.prop50 = SiteCatalystLocator;
+//s.prop51 = SiteCatalystReceiptNo;
+//
+///******************************
+// *2016-01-28
+// ******************************/
+//s.prop55 = SiteCatalystRequest2;
+//s.prop56 = SiteCatalystRequest3;
+//s.prop57 = SiteCatalystAdvanceUpgradeFlightDetail;
+//s.prop58 = SiteCatalystAdvanceUpgradePassengerDetail;
+//
+//s.hier1 = SiteCatalystUUCount;
+//
+///* E-commerce Variables */
+//s.events = SiteCatalystEvent;
+//s.products = SiteCatalystProduct;
+//s.purchaseID = SiteCatalystPurchaseCode;
+//s.eVar1 = SiteCatalystMember;
+//s.eVar2 = SiteCatalystCookie3;
+//s.eVar3 = SiteCatalystCookie4;
+//s.eVar4 = SiteCatalystCookie2;
+//s.eVar5 = SiteCatalystCookie1;
+//s.eVar6 = SiteCatalystTime;
+//s.eVar7 = SiteCatalystComponentView;
+//s.eVar8 = '';
+//s.eVar20 = SiteCatalystDepartDate;
+//s.eVar21 = SiteCatalystFlightNo;
+//s.eVar22 = SiteCatalystRoute;
+//s.eVar23 = SiteCatalystClass;
+//s.eVar24 = SiteCatalystFare;
+//s.eVar59 = SiteCatalystRequest1;
+//
+//// prop
+//var propReMapping = {
+//  prop1: '',
+//  prop2: '',
+//  prop3: '',
+//  prop4: '',
+//  prop5: '',
+//  prop6: '',
+//  prop7: 'prop7',
+//  prop8: 'eVar76',
+//  prop9: 'eVar77',
+//  prop10: 'eVar81',
+//  prop11: 'prop11',
+//  prop12: '',
+//  prop14: 'prop14',
+//  prop15: 'prop15',
+//  prop16: '',
+//  prop17: '',
+//  prop18: '',
+//  prop19: '',
+//  prop20: 'eVar82',
+//  prop21: 'eVar83',
+//  prop22: 'eVar84',
+//  prop23: 'eVar85',
+//  prop24: 'eVar86',
+//  prop25: 'eVar87',
+//  prop26: 'eVar88',
+//  prop27: 'eVar89',
+//  prop28: 'eVar90',
+//  prop29: 'eVar91',
+//  prop30: 'eVar92',
+//  prop31: 'eVar93',
+//  prop32: 'eVar94',
+//  prop36: 'eVar96',
+//  prop37: 'eVar97',
+//  prop38: 'eVar98',
+//  prop39: 'eVar99',
+//  prop40: 'eVar100',
+//  prop41: 'eVar101',
+//  prop42: 'eVar102',
+//  prop43: 'eVar103',
+//  prop44: 'eVar104',
+//  prop45: 'eVar105',
+//  prop46: 'eVar106',
+//  prop47: 'eVar107',
+//  prop49: '',
+//  prop50: 'eVar110',
+//  prop51: 'eVar111',
+//  prop52: 'eVar112',
+//  prop53: 'eVar113',
+//  prop55: 'eVar115',
+//  prop56: 'eVar116',
+//  prop57: 'eVar117',
+//  prop58: 'eVar118',
+//  prop59: 'eVar119',
+//  prop60: 'eVar120',
+//  prop61: 'eVar121',
+//  prop62: 'prop62',
+//  prop63: 'eVar123',
+//  prop64: 'eVar124',
+//  prop65: 'eVar125',
+//  prop66: 'eVar126',
+//  prop67: 'eVar127',
+//  prop68: 'eVar128',
+//  prop69: 'eVar129',
+//  prop70: 'eVar130',
+//  prop71: 'eVar131',
+//  prop72: 'eVar132',
+//  prop73: 'eVar133',
+//  prop74: 'eVar134',
+//  prop75: 'prop75',
+//};
+//// eVar
+//var eVarReMapping = {
+//  eVar1: 'eVar1',
+//  eVar2: 'eVar2',
+//  eVar3: 'eVar3',
+//  eVar4: 'eVar4',
+//  eVar5: 'eVar5',
+//  eVar6: 'eVar6',
+//  eVar7: 'eVar7',
+//  eVar8: 'eVar8',
+//  eVar9: 'eVar9',
+//  eVar10: 'eVar10',
+//  eVar11: 'eVar11',
+//  eVar12: 'eVar12',
+//  eVar13: 'eVar13',
+//  eVar14: 'eVar14',
+//  eVar15: 'eVar15',
+//  eVar16: '',
+//  eVar17: 'eVar17',
+//  eVar18: 'eVar18',
+//  eVar19: 'eVar19',
+//  eVar20: 'eVar20',
+//  eVar21: 'eVar21',
+//  eVar22: 'eVar22',
+//  eVar23: 'eVar23',
+//  eVar25: 'eVar25',
+//  eVar26: 'eVar26',
+//  eVar27: 'eVar27',
+//  eVar28: 'eVar28',
+//  eVar29: 'eVar29',
+//  eVar31: 'eVar31',
+//  eVar41: 'eVar41',
+//  eVar42: 'eVar42',
+//  eVar43: 'eVar43',
+//  eVar44: 'eVar44',
+//  eVar45: 'eVar45',
+//  eVar46: 'eVar46',
+//  eVar49: 'eVar49',
+//  eVar50: 'eVar50',
+//  eVar51: 'eVar51',
+//  eVar55: 'eVar55',
+//  eVar58: 'eVar58',
+//  eVar59: 'eVar59',
+//  eVar60: 'eVar60',
+//  eVar61: 'eVar61',
+//  eVar62: 'eVar62',
+//  eVar63: 'eVar63',
+//  eVar64: 'eVar64',
+//  eVar65: 'eVar65',
+//  eVar66: 'eVar66',
+//  eVar68: 'eVar68',
+//  eVar69: 'eVar69',
+//  eVar72: 'eVar72',
+//  eVar75: 'eVar75',
+//};
+//
+//// events
+//var anakokunai_events = {
+//  event1: 'event107',
+//  event2: 'event2',
+//  event3: '',
+//  event4: 'event4',
+//  event5: 'event5',
+//  event6: '',
+//  event7: 'event7',
+//  event8: 'event8',
+//  event9: 'event9',
+//  event10: '',
+//  event11: 'event11',
+//  event25: '',
+//  event28: '',
+//  event38: '',
+//  event39: '',
+//  event66: '',
+//  event67: '',
+//  event68: '',
+//  event69: '',
+//  event84: '',
+//  event85: '',
+//  event86: '',
+//  event87: '',
+//};
+//
+//// events
+//var anaskyweb_events = {
+//  event12: 'event12',
+//  event13: 'event13',
+//  event14: 'event14',
+//  event15: 'event15',
+//  event16: 'event16',
+//  event17: 'event17',
+//  event18: 'event18',
+//  event19: 'event19',
+//  event20: 'event20',
+//  event21: 'event21',
+//  event22: 'event22',
+//  event23: 'event23',
+//  event24: 'event24',
+//  event25: 'event3',
+//  event28: 'event28',
+//  event29: 'event29',
+//  event32: 'event32',
+//  event33: 'event33',
+//  event34: 'event34',
+//  event35: 'event35',
+//  event36: 'event36',
+//  event37: 'event37',
+//  event38: 'event38',
+//  event39: 'event39',
+//  event62: 'event62',
+//  event63: 'event63',
+//  event64: 'event64',
+//  event65: 'event65',
+//  event66: 'event66',
+//  event67: 'event67',
+//  event68: 'event68',
+//  event69: 'event69',
+//  event70: 'event70',
+//  event71: 'event71',
+//  event72: 'event72',
+//  event73: 'event73',
+//  event74: 'event74',
+//  event75: 'event75',
+//  event76: 'event76',
+//  event77: 'event77',
+//  event78: 'event78',
+//  event79: 'event79',
+//  event80: 'event80',
+//  event81: 'event81',
+//  event82: 'event82',
+//  event83: 'event83',
+//  event84: 'event84',
+//  event85: 'event85',
+//  event86: 'event86',
+//  event87: 'event87',
+//  event88: 'event88',
+//  event89: 'event89',
+//  event90: 'event90',
+//  event91: 'event91',
+//};
+//
+//function setSiteVars(s2) {
+//  s2.charSet = 'UTF-8';
+//  s2.prop73 = 'code_to_paste_PT06_01_10'; //CTPパターン_Version親番_Version枝番
+//}
+//
+//s.charSet = 'UTF-8';
+//
+///************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+//var s_code = s.t();
+//if (s_code) document.write(s_code);

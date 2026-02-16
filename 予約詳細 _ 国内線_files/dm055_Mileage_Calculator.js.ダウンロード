@@ -1,0 +1,1271 @@
+//****************************************************************パーソナライズJS Start
+/*===========================================================
+予約完了・予約詳細・決済完了画面のバナー共通パーソナライズJS
+※DIVの増設する場合は拡張機能の修正が必要
+============================================================*/
+var tlm100_personalize_flg = false ;
+var tlm200_personalize_flg = false ;
+var tlm300_personalize_flg = false ;
+var tlm400_personalize_flg = false ;
+var tlm500_personalize_flg = false ;
+
+var tlm300_bannerHTML_txt = "";
+var tlm300_bannerCSS_txt  = "";
+var tlm300_viewLink_txt   = "";
+
+//*************************************
+// 各出し分け箇所の編集処理
+//*************************************
+var tlm100_process = function() {
+}
+var tlm200_process = function() {
+}
+var tlm300_process = function() {
+
+	//バナー編集用の施策毎の関数を定義する
+	//21-DM-055 ACHアップセル
+	if (typeof dm055_process === "function") {
+		dm055_process() ;
+	}
+
+};
+var tlm400_process = function() {
+}
+var tlm500_process = function() {
+}
+
+//*************************************
+// 各出し分け箇所の掲出処理
+//*************************************
+var tlm100_personalize = function() {
+};
+var tlm200_personalize = function() {
+};
+var tlm300_personalize = function() {
+
+	if (tlm300_personalize_flg) {
+		//tlm300 パーソナライズOK
+		//優先順のキーを取得
+		//パーソナライズMAPから取り出し
+
+		// スタイル適用
+		$('head').append(tlm300_bannerCSS_txt);
+
+		// バナー挿入
+		var selector = $('#tlm300');
+		selector.after(tlm300_bannerHTML_txt);
+
+		// scmini
+		tlm_dms_be_scmini(tlm300_viewLink_txt);
+
+	}
+
+};
+var tlm400_personalize = function() {
+};
+var tlm500_personalize = function() {
+};
+
+//scmini関数
+function tlm_dms_be_scmini (LinkName) {
+	var tlm_infotag = LinkName;
+	var obj = new Object;
+	obj.linkTrackVars='prop1,prop2,prop3,prop4,prop5,prop6,prop7,prop8,prop12,prop13,prop14,prop15,prop17,prop18,prop19,prop49,eVar1,eVar2,eVar3,eVar4,eVar5,eVar6,eVar7,eVar49,eVar55,eVar74,events,channel';
+	obj.prop7 = tlm_infotag;
+	obj.eVar7 = tlm_infotag;
+	setTimeout(function(){tlm_dms_be_SCbackfunc(obj,'scmini',tlm_infotag);},1000);
+
+}
+
+//scclick関数
+tlm_dms_be_SCClick = function (LinkName){
+	var obj = new Object;
+	obj.linkTrackVars='prop1,prop2,prop3,prop4,prop5,prop6,prop7,prop8,prop12,prop13,prop14,prop15,prop17,prop18,prop19,prop49,eVar1,eVar2,eVar3,eVar4,eVar5,eVar6,eVar7,eVar49,eVar55,eVar74,events,channel';
+	obj.prop7    = LinkName;
+	obj.eVar7    = LinkName;
+	tlm_dms_be_SCbackfunc(obj,'scclick',LinkName);
+}
+
+//AppM対応sc関数
+function tlm_dms_be_SCbackfunc(p_obj,p_fname,p_linkName,count){
+	if(typeof count === 'undefined'){count = 1;}
+
+	//Check
+	if(typeof s === 'undefined' || typeof s.tl !== 'function' || typeof setSiteVars !== 'function' ){
+		if(count >= 10){
+			console.log("sc_Timeout_tlm_dms_be");
+			return;
+		}
+		console.log("sc_reload_tlm_dms_be "+count+"/10");
+		setTimeout(function(){tlm_dms_be_SCbackfunc(p_obj,p_fname,p_linkName,++count)},1000);
+		return;
+	}
+
+	//OK
+	for(name in p_obj){
+		s[name] = p_obj[name];
+	}
+	if(p_fname == "scclick"){
+		s.prop13    = SiteCatalystCookie0;
+		s.prop14    = SiteCatalystDateTimeSec;
+	}
+	s.tl(this,'o',p_linkName);
+}
+
+//****************************************************************パーソナライズJS End
+
+/*===========================================================
+DM055 テスト用環境切り替え関数
+============================================================*/
+//debug=test/prev/prod
+var dm055_debug = "" ;
+//amcno_ach=1234567890&amcno_aid=1234567890
+var dm055_amcno_ach = "" ;
+var dm055_amcno_aid = "" ;
+//device=[PC/SP/pc/sp]
+var dm055_device = "" ;
+
+function dm055_environment_switcher() {
+
+	var param = _getScriptParams() ;
+
+        if (typeof param['debug'] !== "undefined") {
+		dm055_debug     = param['debug'].toLowerCase() ;
+	}
+        if (typeof param['amcno_ach'] !== "undefined") {
+		dm055_amcno_ach = param['amcno_ach'] ;
+	}
+        if (typeof param['amcno_aid'] !== "undefined") {
+		dm055_amcno_aid = param['amcno_aid'] ;
+	}
+        if (typeof param['device'] !== "undefined") {
+		dm055_device = param['device'].toUpperCase() ;
+	}
+
+	function _getScriptParams()
+	{
+	    var scripts = document.getElementById( 'dm055calc_js' );
+	    var src = scripts.src;
+
+	    var query = src.substring( src.indexOf( '?' ) + 1 );
+	    var parameters = query.split( '&' );
+
+	    // URLクエリパラメーターを分解
+	    var result = new Object();
+	    for( var i = 0; i < parameters.length; i++ )
+	    {
+	        var element    = parameters[ i ].split( '=' );
+	        var paramName  = decodeURIComponent( element[ 0 ] );
+	        var paramValue = decodeURIComponent( element[ 1 ] );
+
+	        result[ paramName ] = paramValue;
+	    }
+	    return result;
+	}
+
+}
+
+//テスト用環境変数切り替え関数の実行
+dm055_environment_switcher() ;
+
+var url_host = m_dm055_switchHost();
+
+function m_dm055_switchHost() {
+
+	var ret_host  = "" ;
+	// サーバ
+	var prod_host = 'https://www.ana.co.jp';
+	var prev_host = 'https://prev.www.ana.co.jp';
+	var test_host = 'https://mnt1.test.www.ana.co.jp';
+
+	//テストモードが設定されていない場合はBEのURLで環境が決まる
+	if (dm055_debug == "") {
+//		if (document.domain.indexOf('.test.aswbe') >= 0){
+		if (document.domain.indexOf('.test') >= 0){
+			ret_host = test_host ;
+		}else{
+			ret_host = prod_host ;
+		}
+	} else if (dm055_debug == "test") {
+			ret_host = test_host ;
+	} else if (dm055_debug == "prev") {
+			ret_host = prev_host ;
+	} else {
+			ret_host = prod_host ;
+        }
+	return ret_host;
+}
+
+/*===========================================================
+DM055 テストログを出力する関数
+============================================================*/
+function _console_log(val){
+	//dm055_debugが指定されている場合 OR テストサイトの場合
+	if (dm055_debug != "") {
+		console.log(val);
+	}
+
+}
+/*===========================================================
+DM055 リストから値を取得する関数
+============================================================*/
+function m_dm055_getListValue(listName, key){
+	var listValue = listName[key];
+
+	if(listValue == undefined){
+		return '';
+	}
+	return listValue;
+};
+
+/*=====================================================
+* Script Name: func_dm055_GetFlightmile
+* Description: フライトボーナスマイル計算(旅程毎にマイルを計算）
+* Version: 1.0
+* Last Up Date: 2021/07/25
+=====================================================*/
+/*===========================================================
+DM055 フライトボーナスマイル計算（フライトマイル×運賃倍率）
+============================================================*/
+var func_dm055_GetFlightmile_error = false ;
+function func_dm055_GetFlightmile(deptAirportCode,arvlAirportCode,faretype) {
+
+	//*******************************************************
+	// 国内線フライトマイルの取得
+	//    KEY:deptAirportCode 出発(3レター)　arvlAirportCode到着(3レター)
+	//*******************************************************
+	var _fr_cd      = deptAirportCode ;
+	    //札幌・千歳 空港コード変換
+	    if(_fr_cd == 'CTS'){_fr_cd = 'SPK';}
+
+	var _to_cd      = arvlAirportCode ;
+	    //札幌・千歳 空港コード変換
+	    if(_fr_cd == 'CTS'){_fr_cd = 'SPK';}
+
+	var _val        = _fr_cd + "_" + _to_cd ;
+	var _flightmile = 0 ; 
+	_flightmile = m_dm055_getListValue(m_FlightmileChart_List,_val) ;
+
+_console_log(" _fr_cd__to_cd F:" + _val);
+
+	if (_flightmile == ''){	//取得できない場合は出発、到着を入れ替える
+		_fr_cd      = arvlAirportCode ;
+		_to_cd      = deptAirportCode ;
+		_val        = _fr_cd + "_" + _to_cd ;
+		_flightmile = 0 ; 
+		_flightmile = m_dm055_getListValue(m_FlightmileChart_List,_val) ;
+_console_log(" _fr_cd__to_cd B:" + _val);
+	}
+
+_console_log(" フライトマイル:" + _flightmile);
+
+	//*******************************************************
+	// 運賃倍率の取得/100
+	//    KEY:faretype
+	//*******************************************************
+	var _faretype      = faretype ;
+	var _faretype_rate =  0 ;
+
+	//そのままの値で比較して取得できない場合は
+	_faretype_rate = m_dm055_getListValue(m_FaretypeRate_List,_faretype) ;
+
+	if (_faretype_rate == '') {	//取得できない場合
+		for (var s = _faretype.slice(0, -1); s != ''; s = s.slice(0, -1)) {
+			_faretype_rate = m_dm055_getListValue(m_FaretypeRate_List,s + "*") ;
+			if (_faretype_rate > 0 ) {
+				break ;
+			}
+		}
+	}
+
+_console_log(" _faretype:" + _faretype);
+_console_log(" 運賃倍率:" + _faretype_rate);
+
+	var _flight_bonus_mile = 0 ;
+	if ( (_flightmile > 0 ) && (_faretype_rate > 0) ) {
+		_flight_bonus_mile = _flightmile * _faretype_rate / 100 ;
+		func_dm055_GetFlightmile_error = false ;
+	}else{
+		func_dm055_GetFlightmile_error = true ;
+	}
+
+	return _flight_bonus_mile ;
+
+}
+
+/*===========================================================
+DM055 マイル計算変数定義
+============================================================*/
+//①フライトボーナスマイル
+var dm055_flight_mile_txt = "";
+
+//②搭乗ボーナスマイル
+var dm055_bonus_mile_NORMAL_txt  = "";
+var dm055_bonus_mile_GOLD_txt    = "";
+var dm055_bonus_mile_PREMIUM_txt = "";
+
+//③航空券購入代マイル
+var dm055_price_mile_txt = "";
+
+//④入会継続マイル
+var dm055_anacard_mile_NORMAL_txt  = "";
+var dm055_anacard_mile_GOLD_txt    = "";
+var dm055_anacard_mile_PREMIUM_txt = "";
+
+//⑤合計マイル
+var dm055_total_mile_NA_txt      = "";
+var dm055_total_mile_NORMAL_txt  = "";
+var dm055_total_mile_GOLD_txt    = "";
+var dm055_total_mile_PREMIUM_txt = "";
+
+/*===========================================================
+DM055 マイル計算主処理
+============================================================*/
+var dm055_Mileage_Calculator = function() {
+	try {
+
+		//利用カード別積算率の取得/100
+		var _card_rate_NORMAL =  0 ;
+		var _card_rate_GOLD   =  0 ;
+		var _card_rate_PREMIUM =  0 ;
+
+		_card_rate_NORMAL  = m_dm055_getListValue(m_CardRate_List,"NORMAL") ;
+		_card_rate_GOLD    = m_dm055_getListValue(m_CardRate_List,"GOLD") ;
+		_card_rate_PREMIUM = m_dm055_getListValue(m_CardRate_List,"PREMIUM") ;
+
+		if (_card_rate_NORMAL == '' || _card_rate_GOLD == '' || _card_rate_PREMIUM == '') {
+			return false ;
+		}
+_console_log(" 利用カード別積算率 N:" + _card_rate_NORMAL);
+_console_log(" 利用カード別積算率 G:" + _card_rate_GOLD);
+_console_log(" 利用カード別積算率 P:" + _card_rate_PREMIUM);
+
+		//フライトボーナスマイル・搭乗ボーナスマイルの計算
+		var _mile = 0 ;
+		//フライトマイル
+		var _flight_mile = 0 ;
+		//搭乗ボーナスマイル
+		var _bonus_mile_NORMAL  = 0 ; 
+		var _bonus_mile_GOLD    = 0 ; 
+		var _bonus_mile_PREMIUM = 0 ; 
+		var _dep = "";
+		var _arv = "";
+		var _fare= "";
+
+		for (let i = 0; i < utag_data.pnrInfo.segInfoList.length; ++i) {
+
+			 _dep  = utag_data.pnrInfo.segInfoList[i].deptAirportCode;
+			 _arv  = utag_data.pnrInfo.segInfoList[i].arvlAirportCode;
+			 _fare = utag_data.pnrInfo.segInfoList[i].fareTypeInfoList[0].fareType;
+			 _mile = func_dm055_GetFlightmile(_dep,_arv,_fare) ;
+
+			 _flight_mile = _flight_mile + _mile;
+
+			_bonus_mile_NORMAL  = _bonus_mile_NORMAL  + (_mile * _card_rate_NORMAL  / 100) ;
+			_bonus_mile_GOLD    = _bonus_mile_GOLD    + (_mile * _card_rate_GOLD    / 100) ;
+			_bonus_mile_PREMIUM = _bonus_mile_PREMIUM + (_mile * _card_rate_PREMIUM / 100) ;
+
+			if (func_dm055_GetFlightmile_error) {
+				return false ;
+			}
+
+		}
+
+		_flight_mile = Math.floor(_flight_mile) ; //小数切り捨て
+	_console_log(" ①フライトボーナスマイル:" + _flight_mile);
+		dm055_flight_mile_txt = _flight_mile.toLocaleString();
+
+		_bonus_mile_NORMAL  = Math.floor(_bonus_mile_NORMAL) ;  //小数切り捨て
+		_bonus_mile_GOLD    = Math.floor(_bonus_mile_GOLD) ;    //小数切り捨て
+		_bonus_mile_PREMIUM = Math.floor(_bonus_mile_PREMIUM) ; //小数切り捨て
+_console_log(" ②搭乗ボーナスマイル N:" + _bonus_mile_NORMAL);
+_console_log(" ②搭乗ボーナスマイル G:" + _bonus_mile_GOLD);
+_console_log(" ②搭乗ボーナスマイル P:" + _bonus_mile_PREMIUM);
+		dm055_bonus_mile_NORMAL_txt  = _bonus_mile_NORMAL.toLocaleString();
+		dm055_bonus_mile_GOLD_txt    = _bonus_mile_GOLD.toLocaleString();
+		dm055_bonus_mile_PREMIUM_txt = _bonus_mile_PREMIUM.toLocaleString();
+
+		//ANA航空券購入マイル
+		//    代金÷100[円]×2[マイル]
+		var _price_mile = 0 ;
+
+		if ((typeof utag_data.pnrInfo.totalPriceInfo.price == 'number') && (typeof utag_data.pnrInfo.totalPriceInfo.pfcPrice == 'number')) {
+			var price = utag_data.pnrInfo.totalPriceInfo.price + utag_data.pnrInfo.totalPriceInfo.pfcPrice ;
+			_price_mile = Math.floor( price / 100 * 2 ) ; //小数切り捨て
+		}
+
+_console_log(" ③航空券購入代マイル:" + _price_mile);
+		dm055_price_mile_txt = _price_mile.toLocaleString();
+
+		//入会継続マイルの取得
+		//    KEY:券種コード(NORMAL/WIDE（使わない）/GOLD/PREMIUM)
+		var _anacard_mile_NORMAL = 0 ;
+		var _anacard_mile_GOLD = 0 ;
+		var _anacard_mile_PREMIUM = 0 ;
+
+		_anacard_mile_NORMAL  = m_dm055_getListValue(m_AdmissionContinuation_List,"NORMAL") ;
+		_anacard_mile_GOLD    = m_dm055_getListValue(m_AdmissionContinuation_List,"GOLD") ;
+		_anacard_mile_PREMIUM = m_dm055_getListValue(m_AdmissionContinuation_List,"PREMIUM") ;
+
+		if (_anacard_mile_NORMAL == '' || _anacard_mile_GOLD == '' || _anacard_mile_PREMIUM == '') {
+			return false ;
+		}
+
+_console_log(" ④入会継続マイル N:" + _anacard_mile_NORMAL);
+_console_log(" ④入会継続マイル G:" + _anacard_mile_GOLD);
+_console_log(" ④入会継続マイル P:" + _anacard_mile_PREMIUM);
+		dm055_anacard_mile_NORMAL_txt  = _anacard_mile_NORMAL.toLocaleString();
+		dm055_anacard_mile_GOLD_txt    = _anacard_mile_GOLD.toLocaleString();
+		dm055_anacard_mile_PREMIUM_txt = _anacard_mile_PREMIUM.toLocaleString();
+
+		//Totalマイル
+		var _total_mile_NA      = 0 ;
+		var _total_mile_NORMAL  = 0 ;
+		var _total_mile_GOLD    = 0 ;
+		var _total_mile_PREMIUM = 0 ;
+
+		// フライトボーナスマイル + 搭乗ボーナスマイル + ANA航空券購入マイル + 入会継続マイル
+		_total_mile_NA      = _flight_mile ;
+		_total_mile_NORMAL  = _flight_mile + _bonus_mile_NORMAL  + _price_mile + _anacard_mile_NORMAL ;
+		_total_mile_GOLD    = _flight_mile + _bonus_mile_GOLD    + _price_mile + _anacard_mile_GOLD ;
+		_total_mile_PREMIUM = _flight_mile + _bonus_mile_PREMIUM + _price_mile + _anacard_mile_PREMIUM ;
+
+_console_log(" ⑤合計マイル -:" + _total_mile_NA);
+_console_log(" ⑤合計マイル N:" + _total_mile_NORMAL);
+_console_log(" ⑤合計マイル G:" + _total_mile_GOLD);
+_console_log(" ⑤合計マイル P:" + _total_mile_PREMIUM);
+
+		dm055_total_mile_NA_txt      = _total_mile_NA.toLocaleString();
+		dm055_total_mile_NORMAL_txt  = _total_mile_NORMAL.toLocaleString();
+		dm055_total_mile_GOLD_txt    = _total_mile_GOLD.toLocaleString();
+		dm055_total_mile_PREMIUM_txt = _total_mile_PREMIUM.toLocaleString();
+
+		return true ;
+
+	} catch (e) {
+		console.log("dm055_Mileage_Calculator Call Error || " + e.message);
+		return false ;
+	}
+};
+
+
+/*===========================================================
+DM055 コンテンツ定義
+============================================================*/
+var dm055_pc_css_txt = ''
++'      <link rel="stylesheet" href="' + url_host +  '/ja/jp/amc/promo/x212/ach/dm055/css/simulation.css">' ;
+
+var dm055_sp_css_txt = ''
++'      <link rel="stylesheet" href="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/css/simulation_sp.css">' ;
+
+var dm055_pc_bannerHTML_ach_txt = ''
++'      <!-- ACH用 -->'
++'      <div class="section simulation">'
++'        <h2 class="simulationTtl">ANAカード会員様へ</h2>'
++'        <div class="simulationHeading">'
++'            <div class="simulationCard"><img src="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/img/card.png" alt=""></div>'
++'            <p class="simulationHeadingText"><span>ANAカードでのお支払いでおトクに</span><span>マイルが貯まります！</span></p>'
++'        </div>'
++'        <div class="simulationInner">'
++'            <dl class="simulationBlock normalCard">'
++'                <dt class="simulationType">一般カードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">切替・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock goldCard">'
++'                <dt class="simulationType">ゴールドカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">切替・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock platinumPremireCard">'
++'                <dt class="simulationType">プラチナプレミアムカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">切替・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <div class="simulationCaution">'
++'                <ul class="simulationCautionList">'
++'                    <li class="simulationCautionItem">*ANAVISAカードの場合。</li>'
++'                    <li class="simulationCautionItem">*ANA航空券購入によるマイルは、ANAカードマイルプラスでの自動積算マイル＋ポイント移行マイルとなります。</li>'
++'                    <li class="simulationCautionItem">*ご購入やご搭乗時点での条件によっては、積算されるマイルが現在の表示結果とは異なる場合がございます。</li>'
++'                </ul>'
++'            </div>'
++'            <div class="simulationBtn">'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowDetail">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnMainStream btnWidthVariable btnVerticalSub" value="ANAカードの詳細を見る" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/?cid=dom_reserve_upsell/' + '\'' + '); tlm_dms_be_SCClick('  + '\'' +  'click_pc_jp_dms_be_bnr_dm055_ach_01' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowJump">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnSubStream btnWidthVariable btnVerticalSub" value="カードを選んで申し込む" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/ichiran/?cid=dom_reserve_upsell' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_pc_jp_dms_be_bnr_dm055_ach_02' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'            </div>'
++'        </div>'
++'      <!-- /.simulation --></div>'
++'      <!-- /ACH用 -->'
+;
+
+var dm055_pc_bannerHTML_aid_txt = ''
++'      <!-- AID用 -->'
++'      <div class="section simulation">'
++'        <h2 class="simulationTtl">ANAマイレージクラブ会員様へ</h2>'
++'        <div class="simulationHeading">'
++'            <div class="simulationCard"><img src="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/img/card.png" alt=""></div>'
++'            <p class="simulationHeadingText"><span>ANAカードでのお支払いでおトクに</span><span>マイルが貯まります！</span></p>'
++'        </div>'
++'        <div class="simulationInner">'
++'            <dl class="simulationBlock normalCard">'
++'                <dt class="simulationType">ANAマイレージクラブ会員の場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem arrow">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_NA_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock goldCard">'
++'                <dt class="simulationType">ゴールドカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <div class="simulationCaution">'
++'                <ul class="simulationCautionList">'
++'                    <li class="simulationCautionItem">*ANAVISAカードの場合。</li>'
++'                    <li class="simulationCautionItem">*ANA航空券購入によるマイルは、ANAカードマイルプラスでの自動積算マイル＋ポイント移行マイルとなります。</li>'
++'                    <li class="simulationCautionItem">*ご購入やご搭乗時点での条件によっては、積算されるマイルが現在の表示結果とは異なる場合がございます。</li>'
++'                </ul>'
++'            </div>'
++'            <div class="simulationBtn">'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowDetail">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnMainStream btnWidthVariable btnVerticalSub" value="ANAカードの詳細を見る" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/?cid=dom_reserve_upsell/' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_pc_jp_dms_be_bnr_dm055_aid_01' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowJump">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnSubStream btnWidthVariable btnVerticalSub" value="カードを選んで申し込む" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/ichiran/?cid=dom_reserve_upsell' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_pc_jp_dms_be_bnr_dm055_aid_02' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'            </div>'
++'        </div>'
++'      <!-- /.simulation --></div>'
++'      <!-- AID用 -->'
+;
+
+var dm055_pc_bannerHTML_non_txt = ''
++'      <!-- その他 -->'
++'      <div class="section simulation">'
++'        <h2 class="simulationTtl">ご予約をお持ちのお客様へ</h2>'
++'        <div class="simulationHeading">'
++'            <div class="simulationCard"><img src="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/img/card.png" alt=""></div>'
++'            <p class="simulationHeadingText"><span>ANAカードでのお支払いでおトクに</span><span>マイルが貯まります！</span></p>'
++'        </div>'
++'        <div class="simulationInner">'
++'            <dl class="simulationBlock normalCard">'
++'                <dt class="simulationType">一般カードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock goldCard">'
++'                <dt class="simulationType">ゴールドカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock platinumPremireCard">'
++'                <dt class="simulationType">プラチナプレミアムカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border arrow">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <div class="simulationCaution">'
++'                <ul class="simulationCautionList">'
++'                    <li class="simulationCautionItem">*ANAVISAカードの場合。</li>'
++'                    <li class="simulationCautionItem">*ANA航空券購入によるマイルは、ANAカードマイルプラスでの自動積算マイル＋ポイント移行マイルとなります。</li>'
++'                    <li class="simulationCautionItem">*ご購入やご搭乗時点での条件によっては、積算されるマイルが現在の表示結果とは異なる場合がございます。</li>'
++'                </ul>'
++'            </div>'
++'            <div class="simulationBtn">'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowDetail">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnMainStream btnWidthVariable btnVerticalSub" value="ANAカードの詳細を見る" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/?cid=dom_reserve_upsell/' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_pc_jp_dms_be_bnr_dm055_oth_01' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowJump">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnSubStream btnWidthVariable btnVerticalSub" value="カードを選んで申し込む" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/ichiran/?cid=dom_reserve_upsell' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_pc_jp_dms_be_bnr_dm055_oth_02' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'            </div>'
++'        </div>'
++'      <!-- /.simulation --></div>'
++'      <!-- その他 -->'
+;
+
+var sp_com_script = ""
++"      <script>"
++"        $(function(){"
++"            $('.simulationItem').on('click',function(){"
++"                $(this).parents('.simulationList').toggleClass('open');"
++"            });"
++"        });"
++"      </script>"
+;
+var dm055_sp_bannerHTML_ach_txt = sp_com_script
++'      <!-- ACH用 -->'
++'      <div class="section simulation">'
++'        <h2 class="simulationTtl">ANAカード会員様へ</h2>'
++'        <div class="simulationHeading">'
++'            <div class="simulationCard"><img src="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/img/card.png" alt=""></div>'
++'            <p class="simulationHeadingText"><span>ANAカードでのお支払いでおトクに</span><span>マイルが貯まります！</span></p>'
++'        </div>'
++'        <div class="simulationInner">'
++'            <dl class="simulationBlock normalCard">'
++'                <dt class="simulationType">一般カードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">切替・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock goldCard">'
++'                <dt class="simulationType">ゴールドカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">切替・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock platinumPremireCard">'
++'                <dt class="simulationType">プラチナプレミアムカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">切替・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <div class="simulationCaution">'
++'                <ul class="simulationCautionList">'
++'                    <li class="simulationCautionItem">*ANAVISAカードの場合。</li>'
++'                    <li class="simulationCautionItem">*ANA航空券購入によるマイルは、ANAカードマイルプラスでの自動積算マイル＋ポイント移行マイルとなります。</li>'
++'                    <li class="simulationCautionItem">*ご購入やご搭乗時点での条件によっては、積算されるマイルが現在の表示結果とは異なる場合がございます。</li>'
++'                </ul>'
++'            </div>'
++'            <div class="simulationBtn">'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowDetail">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnMainStream btnWidthVariable btnVerticalSub" value="ANAカードの詳細を見る" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/?cid=dom_reserve_upsell/' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_sp_jp_dms_be_bnr_dm055_ach_01' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowJump">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnSubStream btnWidthVariable btnVerticalSub" value="カードを選んで申し込む" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/ichiran/?cid=dom_reserve_upsell' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_sp_jp_dms_be_bnr_dm055_ach_02' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'            </div>'
++'        </div>'
++'      <!-- /.simulation --></div>'
++'      <!-- /ACH用 -->'
+;
+
+var dm055_sp_bannerHTML_aid_txt = sp_com_script
++'      <!-- AID用 -->'
++'      <div class="section simulation">'
++'        <h2 class="simulationTtl">ANAマイレージクラブ会員様へ</h2>'
++'        <div class="simulationHeading">'
++'            <div class="simulationCard"><img src="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/img/card.png" alt=""></div>'
++'            <p class="simulationHeadingText"><span>ANAカードでのお支払いでおトクに</span><span>マイルが貯まります！</span></p>'
++'        </div>'
++'        <div class="simulationInner">'
++'            <dl class="simulationBlock normalCard">'
++'                <dt class="simulationType">ANAマイレージクラブ会員の場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_NA_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock goldCard">'
++'                <dt class="simulationType">ゴールドカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <div class="simulationCaution">'
++'                <ul class="simulationCautionList">'
++'                    <li class="simulationCautionItem">*ANAVISAカードの場合。</li>'
++'                    <li class="simulationCautionItem">*ANA航空券購入によるマイルは、ANAカードマイルプラスでの自動積算マイル＋ポイント移行マイルとなります。</li>'
++'                    <li class="simulationCautionItem">*ご購入やご搭乗時点での条件によっては、積算されるマイルが現在の表示結果とは異なる場合がございます。</li>'
++'                </ul>'
++'            </div>'
++'            <div class="simulationBtn">'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowDetail">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnMainStream btnWidthVariable btnVerticalSub" value="ANAカードの詳細を見る" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/?cid=dom_reserve_upsell/' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_sp_jp_dms_be_bnr_dm055_aid_01' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowJump">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnSubStream btnWidthVariable btnVerticalSub" value="カードを選んで申し込む" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/ichiran/?cid=dom_reserve_upsell' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_sp_jp_dms_be_bnr_dm055_aid_02' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'            </div>'
++'        </div>'
++'      <!-- /.simulation --></div>'
++'      <!-- AID用 -->'
+;
+
+var dm055_sp_bannerHTML_non_txt = sp_com_script
++'      <!-- その他 -->'
++'      <div class="section simulation">'
++'        <h2 class="simulationTtl">ご予約をお持ちのお客様へ</h2>'
++'        <div class="simulationHeading">'
++'            <div class="simulationCard"><img src="' + url_host + '/ja/jp/amc/promo/x212/ach/dm055/img/card.png" alt=""></div>'
++'            <p class="simulationHeadingText"><span>ANAカードでのお支払いでおトクに</span><span>マイルが貯まります！</span></p>'
++'        </div>'
++'        <div class="simulationInner">'
++'            <dl class="simulationBlock normalCard">'
++'                <dt class="simulationType">一般カードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_NORMAL_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock goldCard">'
++'                <dt class="simulationType">ゴールドカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_GOLD_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <dl class="simulationBlock platinumPremireCard">'
++'                <dt class="simulationType">プラチナプレミアムカードの場合</dt>'
++'                <dd class="simulationDetail">'
++'                    <ul class="simulationList">'
++'                        <li class="simulationItem total">'
++'                            <div class="simulationTotal">合計</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_total_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">フライトマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_flight_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">搭乗ボーナスマイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_bonus_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem">'
++'                            <div class="simulationName">ANA航空券のご購入</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_price_mile_txt</span>マイル</div>'
++'                        </li>'
++'                        <li class="simulationItem border">'
++'                            <div class="simulationName">入会・継続マイル</div>'
++'                            <div class="simulationMiles"><span class="mileNum">dm055_anacard_mile_PREMIUM_txt</span>マイル</div>'
++'                        </li>'
++'                    </ul>'
++'                </dd>'
++'            </dl>'
++'            <div class="simulationCaution">'
++'                <ul class="simulationCautionList">'
++'                    <li class="simulationCautionItem">*ANAVISAカードの場合。</li>'
++'                    <li class="simulationCautionItem">*ANA航空券購入によるマイルは、ANAカードマイルプラスでの自動積算マイル＋ポイント移行マイルとなります。</li>'
++'                    <li class="simulationCautionItem">*ご購入やご搭乗時点での条件によっては、積算されるマイルが現在の表示結果とは異なる場合がございます。</li>'
++'                </ul>'
++'            </div>'
++'            <div class="simulationBtn">'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowDetail">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnMainStream btnWidthVariable btnVerticalSub" value="ANAカードの詳細を見る" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/?cid=dom_reserve_upsell/' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_sp_jp_dms_be_bnr_dm055_oth_01' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'                <div class="btnAreaBlockRelated btnArrowNext btnArrowJump">'
++'                    <input type="button" id="tlm_pcrdego_lp" class="btnBase btnSubStream btnWidthVariable btnVerticalSub" value="カードを選んで申し込む" onclick="window.open(' + '\'' + 'https://www.ana.co.jp/ja/jp/amc/anacard/ichiran/?cid=dom_reserve_upsell' + '\'' + '); tlm_dms_be_SCClick(' + '\'' + 'click_sp_jp_dms_be_bnr_dm055_oth_02' + '\'' + '); return true;">'
++'                    <span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_WHT.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" width="10" height="10"></span>'
++'                </div>'
++'            </div>'
++'        </div>'
++'      <!-- /.simulation --></div>'
++'      <!-- その他 -->'
+;
+
+/*===========================================================
+DM055 マイル計算&バナー編集
+============================================================*/
+var dm055_process = function () {
+
+	var dm055_test_user_ach_id = dm055_amcno_ach ;
+	var dm055_test_user_aid_id = dm055_amcno_aid ;
+
+	if (typeof utag_data !== "undefined" &&
+	    typeof utag_data.pnrInfo !== "undefined" &&
+	    typeof utag_data.pnrInfo.segInfoList !== "undefined" &&
+	           utag_data.pnrInfo.segInfoList.length > 0) {
+
+		if (dm055_Mileage_Calculator()){
+			//ユーザー種別判断(ACH/AID/非会員)
+			var user_non = false ;
+			var user_ach = false ;
+			var user_aid = false ;
+			//ユーザー取得
+			var _strUnique         = _GetCookieStr('unique');
+			var _arrUniqueCookie   = "" ;
+			var _UniqueCookieValue = "" ;
+			var amcNo              = "" ;
+			if (_strUnique != -1) {
+				_arrUniqueCookie    = _strUnique.split(":");
+				_UniqueCookieValue  = _arrUniqueCookie[0].replace('userId_','');
+			}
+
+			//ログイン判断
+			if(isUserLoginChk()) {
+				if(_UniqueCookieValue){
+					amcNo = _UniqueCookieValue.substr(0,10);
+					if (amcNo.substr(0, 1) == '3' || amcNo.substr(0, 2) == '10' || amcNo == dm055_test_user_ach_id ) {
+						user_ach = true ;
+					}else{
+						user_aid = true ;
+					}
+				}
+
+			}else{
+				user_non = true ;
+			}
+
+			//決済済み判断
+//			if (typeof utag_data.pnrInfo.issueInfo.ticketStatus === "string" &&
+//	                           utag_data.pnrInfo.issueInfo.ticketStatus.length >= 2) {
+//				if (utag_data.pnrInfo.issueInfo.ticketStatus.substr(0,2) === "NT" ||
+//				    utag_data.pnrInfo.issueInfo.ticketStatus.substr(0,2) === "TL" ||
+//				    utag_data.pnrInfo.issueInfo.ticketStatus.substr(0,2) === "AT"
+//				   ) {
+//					console.log("dm055 未決済");
+//				}else{
+//					console.log("dm055 決済済み");
+//				}
+//			}
+
+			//デバイス判断
+			if (document.domain.indexOf('aswbe') >= 0){
+				_isDeviceType = Aswbed.CommonContext.UserAgent.getDeviceType() ;
+			} else {
+			        _isDeviceType = dm055_device ;
+			}
+
+			_css_txt      = "";
+			_html_txt     = "";
+			_viewLink_txt = "";
+			if (_isDeviceType === 'SP') {
+			//SP
+				_css_txt      = dm055_sp_css_txt ;
+
+				if  (user_non) {
+				//非会員
+				_html_txt = dm055_sp_bannerHTML_non_txt ;
+				_viewLink_txt = "view_sp_jp_dms_be_bnr_dm055_oth";
+				} else if (user_ach) {
+				//ACH
+				_html_txt = dm055_sp_bannerHTML_ach_txt ;
+				_viewLink_txt = "view_sp_jp_dms_be_bnr_dm055_ach";
+				} else if (user_aid) {
+				//AID
+				_html_txt = dm055_sp_bannerHTML_aid_txt ;
+				_viewLink_txt = "view_sp_jp_dms_be_bnr_dm055_aid";
+				}
+			}else{
+			//PC
+				_css_txt      = dm055_pc_css_txt ;
+
+				if  (user_non) {
+				//非会員
+				_html_txt = dm055_pc_bannerHTML_non_txt ;
+				_viewLink_txt = "view_pc_jp_dms_be_bnr_dm055_oth";
+				} else if (user_ach) {
+				//ACH
+				_html_txt = dm055_pc_bannerHTML_ach_txt ;
+				_viewLink_txt = "view_pc_jp_dms_be_bnr_dm055_ach";
+				} else if (user_aid) {
+				//AID
+				_html_txt = dm055_pc_bannerHTML_aid_txt ;
+				_viewLink_txt = "view_pc_jp_dms_be_bnr_dm055_aid";
+				}
+			}
+
+			//DIV tlm300に出力する 掲出内容を編集する
+			//バナーHTML編集＆設定
+			//①フライトマイル編集
+			_html_txt =_mlt_replace(_html_txt,"dm055_flight_mile_txt",dm055_flight_mile_txt) ;
+
+			//②搭乗ボーナスマイル
+			_html_txt =_mlt_replace(_html_txt,"dm055_bonus_mile_NORMAL_txt" ,dm055_bonus_mile_NORMAL_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_bonus_mile_GOLD_txt"   ,dm055_bonus_mile_GOLD_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_bonus_mile_PREMIUM_txt",dm055_bonus_mile_PREMIUM_txt) ;
+
+			//③航空券購入代マイル
+			_html_txt =_mlt_replace(_html_txt,"dm055_price_mile_txt",dm055_price_mile_txt) ;
+
+			//④入会継続マイル
+			_html_txt =_mlt_replace(_html_txt,"dm055_anacard_mile_NORMAL_txt" ,dm055_anacard_mile_NORMAL_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_anacard_mile_GOLD_txt"   ,dm055_anacard_mile_GOLD_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_anacard_mile_PREMIUM_txt",dm055_anacard_mile_PREMIUM_txt) ;
+
+			//⑤合計マイル
+			_html_txt =_mlt_replace(_html_txt,"dm055_total_mile_NA_txt"     ,dm055_total_mile_NA_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_total_mile_NORMAL_txt" ,dm055_total_mile_NORMAL_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_total_mile_GOLD_txt"   ,dm055_total_mile_GOLD_txt) ;
+			_html_txt =_mlt_replace(_html_txt,"dm055_total_mile_PREMIUM_txt",dm055_total_mile_PREMIUM_txt) ;
+
+			tlm300_bannerHTML_txt = _html_txt;
+			//スタイルシート設定
+			tlm300_bannerCSS_txt  = _css_txt;
+			//SCClick設定 ※HTML内に固定記載の為、未設定
+			//SCmini設定
+			tlm300_viewLink_txt   = _viewLink_txt;
+
+			tlm300_personalize_flg = true ;
+		}else{
+			tlm300_personalize_flg = false ;
+		}
+
+		//優先順のキーを登録
+		//パーソナライズMAP追加
+
+	}
+	//ログインチェック
+	function isUserLoginChk() {
+
+		try {
+			var personal;
+			var name = "personal=";
+			var ca = document.cookie.split(';');
+			for(var i = 0; i <ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					personal = decodeURIComponent(c.substring(name.length, c.length));
+				}
+			}
+
+			if (typeof personal !== "undefined") {
+				return true;
+			}else if ( typeof personal === "undefined") {
+				return false;
+			}
+
+		    } catch (e) {
+		        console.log("isUserLoginChk Error || " + e.message);
+		}
+
+	}
+	//cookie取得
+	function _GetCookieStr(_strCookieName){
+		var RtOrgCookie			= "";
+		var CookieFlg			= 0;
+		var arrOrgCookie		= document.cookie.split(";");
+		var strCookieName		= _strCookieName + '=';
+
+		for(i = 0;i<arrOrgCookie.length;i++){
+			if(arrOrgCookie[i].indexOf(strCookieName)!=-1){
+				RtOrgCookie = arrOrgCookie[i].replace(strCookieName,'');
+				if(RtOrgCookie.indexOf(" ")!=-1){
+					RtOrgCookie = RtOrgCookie.replace(' ','');
+				}
+				CookieFlg++;
+				break;
+			}
+		}
+		if(CookieFlg != 0){
+			return RtOrgCookie;
+		}else{
+			return -1;
+		}
+	}
+	//HTML編集用
+	function _mlt_replace (str ,rstr1, rstr2) {
+		var result = str.replace(rstr1, rstr2);
+		 
+		while(result !== str) {
+		 
+		    str = str.replace(rstr1, rstr2);
+		    result = result.replace(rstr1, rstr2);
+		 
+		}
+		return result ;
+	}
+};
+
+//************************************************************************

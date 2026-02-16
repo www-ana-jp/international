@@ -1,0 +1,583 @@
+/**
+ * @fileoverview ダイアログ表示に関連する処理
+ * 
+ * @require  jQuery1.8.3
+ * @require  aswbed_common.js
+ * @version  0.16
+ * @update   2023/09/07
+ */
+
+/**
+* @namespace ダイアログモジュール用オブジェクト
+*/
+Aswbed.Dialog = Aswbed.Dialog || {};
+
+/**
+ * ダイアログを保持するクラスプロパティ
+ */
+Aswbed.Dialog.dialog = null;
+
+/**
+ * ダイアログに表示する文字列を格納したオブジェクトを保持するクラスプロパティ
+ */
+Aswbed.Dialog.source = null;
+
+/**
+ * ダイアログ呼び出し元を保持するクラスプロパティ
+ */
+Aswbed.Dialog.opener = null;
+
+/**
+ * ダイアログ呼び出し時に呼び出し元のイベントタイプを保持するクラスプロパティ
+ */
+Aswbed.Dialog.openerEventType = null;
+
+/**
+ * 情報を表示する要素のクラス名を保持するクラスプロパティ
+ */
+Aswbed.Dialog.dialogMessage = '.dialogMessage';
+
+/**
+ * ダイアログウィンドウを操作するためのクラス名を保持するクラスプロパティ
+ */
+Aswbed.Dialog.htmlFooter = '#cmnFooter';
+Aswbed.Dialog.dialogWrapper = '#modalArea';
+Aswbed.Dialog.dialogContainer = '.modalContainer';
+Aswbed.Dialog.inputModalWindow = '.inputModalWindow';
+Aswbed.Dialog.iframeDirectlyUnderBody = 'body>iframe';
+
+/**
+ * 非表示テキストフィールドを指定するためのクラス名を保持するクラスプロパティ
+ */
+Aswbed.Dialog.hiddenField = '.hiddenField';
+
+/**
+ * setIntervalとsetTimeoutのタイマーを記録するIDを保持するクラスプロパティ
+ */
+Aswbed.Dialog.timeoutIdAsResize = null;
+Aswbed.Dialog.timeoutIdAsScroll = null;
+Aswbed.Dialog.timeoutIdAsClose = null;
+
+/**
+ * 呼び出し時のスクロール量を保持するクラスプロパティ
+ */
+Aswbed.Dialog.scrollTop = null;
+
+/**
+ * 設定用オブジェクト
+ */
+Aswbed.Dialog.configurations = {
+    'focusableElement': 'a, [tabindex], input, select'
+};
+
+/** 
+ * Eventオブジェクトを返却するメソッド
+ * IE対策の為メソッド化<br>
+ * ※jQueryのeventオブジェクトに対しては当該メソッドを使用する必要はありません。
+ *
+ * <code>
+ * Aswbed.Dialog.getEvent(e);
+ * </code>
+ * 
+ * @param {Event} e イベントオブジェクト
+ * @return {object} イベントオブジェクト
+ */
+Aswbed.Dialog.getEvent = function(e){
+    'use strict';
+    return window.event || e;
+};
+
+/** 
+ * Eventオブジェクトのtarget（呼出元の要素）を取得するメソッド
+ * ※jQueryのeventオブジェクトに対しては当該メソッドを使用する必要はありません。
+ *
+ * <code>
+ * Aswbed.Dialog.getTarget(e);
+ * </code>
+ * 
+ * @param {Event} e イベントオブジェクト
+ * @returns {Object} 該当EventのDOM要素
+ * 
+ */
+Aswbed.Dialog.getTarget = function(e){
+    'use strict';
+    var eventObject = Aswbed.Dialog.getEvent(e);
+    if (eventObject === null) {
+        return null;
+    }
+    var target = eventObject.srcElement || eventObject.target;
+    return target;
+};
+
+/** 
+ * Eventオブジェクトのtype属性を取得するメソッド
+ * ※jQueryのeventオブジェクトに対しては当該メソッドを使用する必要はありません。
+ *
+ * <code>
+ * Aswbed.Dialog.getType(e);
+ * </code>
+ * 
+ * @param {Event} e イベントオブジェクト
+ * @returns {String} イベントの発生タイプ
+ * 
+ */
+Aswbed.Dialog.getType = function(e){
+    'use strict';
+    var eventObject = Aswbed.Dialog.getEvent(e);
+    if (eventObject === null) {
+        return null;
+    }
+    return eventObject.type;
+};
+
+
+/** 
+ * 表示端末を判別してダイアログの表示方法を切り替えるメソッド
+ * 
+ * <code>
+ *
+ * //通常にダイアログを表示する場合は引数は２つで設定する
+ * onclick="return Aswbed.Dialog.open('#error', event);"
+ *
+ * //ダイアログ内にメッセージを表示する場合は、第3引数にjQuery名の要素を指定すると、その要素のvalue値を取得して、ダイアログ内の「.dialogMessage」クラス要素に値が挿入される
+ * onclick="return Aswbed.Dialog.open('#error', event, '#test');"
+ *
+ * </code>
+ * 
+ * @param {String} id モーダルウィンドウのID名
+ * @param {Event} e イベントオブジェクト
+ * @param {String} source モーダルウィンドウに表示する文字列
+ * 
+ */
+Aswbed.Dialog.open = function(id, e, source) {
+    'use strict';
+
+    //$(Aswbed.Dialog.dialogWrapper)があれば削除
+    if($(Aswbed.Dialog.dialogWrapper)[0]){
+        Aswbed.Dialog.dialog.insertAfter(Aswbed.Dialog.dialog.parent()).hide();
+        $(Aswbed.Dialog.dialogWrapper).remove();
+    }
+
+    Aswbed.Dialog.dialog = $(Aswbed.escapeForIdSelectorString(id));
+    Aswbed.Dialog.source = $(Aswbed.escapeForIdSelectorString(source));
+
+    if (Aswbed.Dialog.opener !== null) {
+        return true;
+    } 
+    else {
+        //ダイアログが非表示の場合は、表示を行い、戻り値にFalseを返却
+        Aswbed.Dialog.opener = Aswbed.Dialog.getTarget(e);
+        Aswbed.Dialog.openerEventType = Aswbed.Dialog.getType(e);
+        Aswbed.Dialog.scrollTop = $(window).scrollTop();
+
+        //ダイアログメッセージがあれば書き換える
+        if(Aswbed.Dialog.source[0]){
+            if(Aswbed.Dialog.source.val() !== ''){
+                Aswbed.Dialog.dialog.find(Aswbed.Dialog.dialogMessage).html(Aswbed.Dialog.source.val());
+            }
+        }
+
+        //表示端末を判別してダイアログの表示方法を切り替える
+        if (Aswbed.CommonContext.UserAgent.getDeviceType() === Aswbed.DeviceType.PC){ 
+            Aswbed.Dialog.showDialogForPc(); 
+        }
+        else if(Aswbed.CommonContext.UserAgent.getDeviceType() === Aswbed.DeviceType.TABLET){
+            Aswbed.Dialog.showDialogForTablet();
+        }
+        else if(Aswbed.CommonContext.UserAgent.getDeviceType() === Aswbed.DeviceType.SP){
+            Aswbed.Dialog.showDialogForSmartphone();
+        }
+
+        //submit処理を止める
+        return false;
+    }
+};
+
+/** 
+ * ダイアログを非表示にするメソッド
+ * 
+ * <code>
+ * onclick="return Aswbed.Dialog.close();"
+ * </code>
+ * @return {boolean} 処理を止めるために、falseを返す
+ */
+Aswbed.Dialog.close = function() {
+    'use strict';
+
+    //SP
+    if(Aswbed.CommonContext.UserAgent.getDeviceType() === Aswbed.DeviceType.SP){
+        $('body > *').css('visibility','visible').not(Aswbed.Dialog.dialogContainer).not(Aswbed.Dialog.hiddenField).not(Aswbed.Dialog.inputModalWindow).not(Aswbed.Dialog.iframeDirectlyUnderBody).show();
+        $('body').css('background', '#ffffff');
+
+        $(Aswbed.Dialog.dialogWrapper).hide();
+
+        //保持しているスクロール量を超えたらスクロールする
+        Aswbed.Dialog.checkWindowHeight();
+
+        Aswbed.Dialog.restoreFocus();
+
+    }
+    //PC TABLET
+    else{
+        $(window).scrollTop(Aswbed.Dialog.scrollTop);
+
+        $(Aswbed.Dialog.dialogWrapper).hide();
+
+        Aswbed.Dialog.restoreFocus();
+
+        //イベントを解除
+        $(window)
+            .off('resize', Aswbed.Dialog.adjustDialogPositionAsResize)
+            .off('scroll', Aswbed.Dialog.adjustDialogPositionAsScroll);
+    }
+
+    Aswbed.Dialog.source = null;
+
+    //submit処理を止める
+    return false;
+};
+
+/**
+ * フォーカスを復元するメソッド
+ *
+ * @returns {void}
+ *
+ */
+Aswbed.Dialog.restoreFocus = function () {
+    'use strict';
+    if (Aswbed.Dialog.opener !== null) {
+        focus();
+    }
+    
+    function focus () {
+        var opener = Aswbed.Dialog.opener;
+
+        Aswbed.Dialog.opener = null;
+
+        if (opener !== void 0 && opener !== null) {
+            if (!$(opener).find('html')[0] && !(opener instanceof XMLHttpRequest)) {
+                if ($(opener).attr('tabindex') === void 0) {
+                    if ($(opener).prop('tagName')) {
+                        if ($(opener).prop('tagName').toLowerCase() === 'a' || $(opener).prop('tagName').toLowerCase() === 'input') {
+                            $(opener).focus();
+                        }
+                        else if ($(opener).closest('a')[0]) {
+                            $(opener).closest('a').focus();
+                        }
+                    }
+                }
+                else {
+                    $(opener).focus();
+                }
+            } else {
+                //ダイヤログが最初から開かれている時
+                $('.header .logo > a').focus();
+            }
+        }
+    }
+};
+
+/** 
+ * ウィンドウの高さを監視、所定の高さになったら画面スクロールさせるタイマーメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.checkWindowHeight();
+ * </code>
+ */
+ Aswbed.Dialog.checkWindowHeight = function() {
+    'use strict';
+
+    Aswbed.Dialog.timeoutIdAsClose = setTimeout(function(){
+        var containerHeight = $(Aswbed.Dialog.htmlFooter).offset().top + $(Aswbed.Dialog.htmlFooter).outerHeight();
+
+        if(containerHeight >= Aswbed.Dialog.scrollTop && Aswbed.Dialog.timeoutIdAsClose !== null){
+            $(window).scrollTop(Aswbed.Dialog.scrollTop);
+            clearTimeout(Aswbed.Dialog.timeoutIdAsClose);
+            Aswbed.Dialog.timeoutIdAsClose = null;
+        }
+        else {
+            if(Aswbed.Dialog.timeoutIdAsClose !== null){
+                Aswbed.Dialog.checkWindowHeight();
+            }
+        }
+    }, 10);
+};
+
+/** 
+ * ダイアログ呼出元のイベントを呼び出すメソッド
+ * 
+ * <code>
+ * onclick="return Aswbed.Dialog.trigger();"
+ * </code>
+ * @return {boolean} 処理を止めるために、falseを返す
+ */
+Aswbed.Dialog.trigger = function() {
+    'use strict';
+
+    if(Aswbed.Dialog.opener !== null) {
+        $(Aswbed.Dialog.opener).attr('data-trigger', 'true');
+        $(Aswbed.Dialog.opener).trigger(Aswbed.Dialog.openerEventType);
+        $(Aswbed.Dialog.opener).removeAttr('data-trigger');
+        Aswbed.Dialog.close();
+    }
+
+    //submit処理を止める
+    return false;
+};
+
+/** 
+ * PC用ダイアログを表示するメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.showDialogForPc();
+ * </code>
+ * 
+ */
+Aswbed.Dialog.showDialogForPc = function(){
+    'use strict';
+    var wrapper  = $('<div>').attr('id', Aswbed.Dialog.dialogWrapper.slice(1));
+    Aswbed.Dialog.dialog.wrap(wrapper).css('visibility', 'hidden').show();
+
+    var margin = Aswbed.Dialog.calculateMargin();
+    Aswbed.Dialog.dialog.css({
+        'margin-top': margin,
+        'visibility': 'visible'
+    });
+
+    $(window).on('resize', function(){ Aswbed.Dialog.adjustDialogPositionAsResize(); });
+
+    //モーダルウィンドウ表示領域以下の要素のイベントフローを阻止する
+    $(Aswbed.Dialog.dialogWrapper).on({ 'mousedown mousemove mouseup' : function(e){ e.stopPropagation(); } });
+    
+    Aswbed.Dialog.limitTabDestination(Aswbed.Dialog.dialog.find(Aswbed.Dialog.configurations.focusableElement), {'onReadyFocus': true});
+};
+
+/** 
+ * タブレット用ダイアログを表示するメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.showDialogForTablet();
+ * </code>
+ * 
+ */
+Aswbed.Dialog.showDialogForTablet = function(){
+    'use strict';
+    var wrapper  = $('<div>').attr('id', Aswbed.Dialog.dialogWrapper.slice(1));
+    Aswbed.Dialog.dialog.wrap(wrapper).css('visibility', 'hidden').show();
+    
+    var wrapperHeight = $(Aswbed.Dialog.htmlFooter).offset().top + $(Aswbed.Dialog.htmlFooter).outerHeight();
+
+    var windowHeight;
+    if (typeof window.innerHeight !== 'undefined'){
+        windowHeight = window.innerHeight;
+    }
+    else{
+        windowHeight = $(window).height();
+    }
+
+    var margin = Aswbed.Dialog.calculateMargin();
+    Aswbed.Dialog.dialog.css({
+        'margin-top': margin,
+        'visibility': 'visible'
+    });
+
+    if(Aswbed.Dialog.dialog.outerHeight() <= windowHeight){
+        $(window)
+            .on('resize', function(){ Aswbed.Dialog.adjustDialogPositionAsResize(); })
+            .on('scroll', function(){ Aswbed.Dialog.adjustDialogPositionAsScroll(); });
+    }
+    else{
+        $(window).scrollTop(0);
+    }
+
+    //モーダルウィンドウ表示領域以下の要素のイベントフローを阻止する
+    $(Aswbed.Dialog.dialogWrapper).on({ 'mousedown mousemove mouseup' : function(e){ e.stopPropagation(); } });
+    
+    Aswbed.Dialog.limitTabDestination(Aswbed.Dialog.dialog.find(Aswbed.Dialog.configurations.focusableElement), {'onReadyFocus': true});
+};
+
+/** 
+ * スマートフォン用ダイアログを表示するメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.showDialogForSmartphone();
+ * </code>
+ * 
+ */
+Aswbed.Dialog.showDialogForSmartphone = function(){
+    'use strict';
+    $('body > *').not(Aswbed.Dialog.dialogContainer).not(Aswbed.Dialog.hiddenField).css('visibility', 'hidden');
+    $('body').css('background', '#999999');
+
+    var wrapper  = $('<div>').attr('id', Aswbed.Dialog.dialogWrapper.slice(1));
+    Aswbed.Dialog.dialog.wrap(wrapper).show();
+    
+    $(window).scrollTop(0);
+    $('body > *').not(Aswbed.Dialog.dialogWrapper).hide();
+
+    Aswbed.Dialog.limitTabDestination(Aswbed.Dialog.dialog.find(Aswbed.Dialog.configurations.focusableElement), {'onReadyFocus': true});
+};
+
+/** 
+ * ダイアログの表示位置を計算して値を返すメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.calculateMargin();
+ * </code>
+ * 
+ * @returns {number} ダイアログのy座標
+ * 
+ */
+Aswbed.Dialog.calculateMargin = function(){
+    'use strict';
+
+    var windowHeight;
+    if (typeof window.innerHeight !== 'undefined'){
+        windowHeight = window.innerHeight;
+    }
+    else {
+        windowHeight = $(window).height();
+    }
+
+    if (Aswbed.CommonContext.UserAgent.getDeviceType() === Aswbed.DeviceType.TABLET){
+        //タブレット回転時に横幅と縦幅を再設定
+        var wrapperHeight = $(Aswbed.Dialog.htmlFooter).offset().top + $(Aswbed.Dialog.htmlFooter).outerHeight();
+
+        if(wrapperHeight < windowHeight){
+            wrapperHeight = windowHeight;
+        }
+
+        $(Aswbed.Dialog.dialogWrapper).css({
+            'position': 'absolute',
+            'width': '100%', 
+            'height': wrapperHeight 
+        });
+        
+    }
+
+    var margin = 20;
+    if (Aswbed.Dialog.dialog.outerHeight() <= windowHeight){
+        margin = windowHeight / 2 - Aswbed.Dialog.dialog.outerHeight() / 2;
+
+        if (Aswbed.CommonContext.UserAgent.getDeviceType() === Aswbed.DeviceType.TABLET){
+            margin += $(window).scrollTop();
+        }
+
+        Aswbed.Dialog.dialog.css('margin-bottom', 0);
+    }
+    else { 
+        Aswbed.Dialog.dialog.css('margin-bottom', margin); 
+    }
+
+    return margin;
+};
+
+/** 
+ * ウィンドウのリサイズ時にダイアログの表示位置を更新するメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.adjustDialogPositionAsResize();
+ * </code>
+ * 
+ */
+Aswbed.Dialog.adjustDialogPositionAsResize = function(){
+    'use strict';
+    if (Aswbed.Dialog.timeoutIdAsResize !== false) {
+        clearTimeout(Aswbed.Dialog.timeoutIdAsResize);
+    }
+    Aswbed.Dialog.timeoutIdAsResize = setTimeout(function() {
+        var margin = Aswbed.Dialog.calculateMargin();
+        Aswbed.Dialog.dialog.css({'margin-top': margin});
+    }, 100);
+};
+
+/** 
+ * ウィンドウのスクロール時にダイアログの表示位置を更新するメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.adjustDialogPositionAsScroll();
+ * </code>
+ * 
+ */
+Aswbed.Dialog.adjustDialogPositionAsScroll = function(){
+    'use strict';
+    if (Aswbed.Dialog.timeoutIdAsScroll !== false){
+        clearTimeout(Aswbed.Dialog.timeoutIdAsScroll);
+    }
+    Aswbed.Dialog.timeoutIdAsScroll = setTimeout(function() {
+        var margin = Aswbed.Dialog.calculateMargin();
+        Aswbed.Dialog.dialog.css({'margin-top': margin});
+    }, 100);
+};
+
+/** 
+ * ダイアログ表示時にTABキーの移動先を制限するメソッド
+ * 
+ * <code>
+ * Aswbed.Dialog.limitTabDestination();
+ * </code>
+ * 
+ * @param {Object} target モーダルウィンドウのID名
+ * @param {Object} option 最初の要素に自動的にフォーカスさせる判定フラグを保持するオブジェクト
+ * 
+ */
+Aswbed.Dialog.limitTabDestination = function(target, option){
+    'use strict';
+    var _this = this;
+    var elementChainArray = [];
+
+    _this.option = $.extend({}, {onReadyFocus:false}, option);
+
+    target.each(function(){
+        elementChainArray.push(this);
+    });
+
+    init();
+
+    function init(){
+        var firstElement = elementChainArray[0];
+        var lastElement = elementChainArray[elementChainArray.length-1];
+
+        for(var i in elementChainArray){
+            $(elementChainArray[i]).keydown(function(event){
+                if (event.keyCode !== 9) {
+                    return;
+                }
+                if (event.target === lastElement && !event.shiftKey) {
+                    firstElement.focus();
+                    return false;
+                }
+                else if (event.target === firstElement && event.shiftKey) {
+                    lastElement.focus();
+                    return false;
+                }
+            });
+        }
+
+        if(_this.option.onReadyFocus === true){
+            firstElement.focus();
+        }
+    }
+};
+
+$(function(){
+  $(window).on('load',function(event) {
+    if($('#cmnFooter').length) {
+        Aswbed.Dialog.htmlFooter = '#cmnFooter';
+    }else {
+        Aswbed.Dialog.htmlFooter = '#bizCmnFooter';
+    }
+    if($('#initialWarning').find('.dialogMessage')[0]){
+        Aswbed.Dialog.open('#initialWarning', event);
+    }
+  });
+
+  if(Aswbed.CommonContext.UserAgent.getSpOsType() === Aswbed.SpOsType.IOS && Aswbed.CommonContext.UserAgent.getDeviceType() !== Aswbed.DeviceType.PC){
+    $(window).on("pageshow",function(event) {
+        if($('#initialWarning').find('.dialogMessage')[0]){
+            Aswbed.Dialog.close();
+            Aswbed.Dialog.open('#initialWarning', event);
+        }
+    });
+  }
+});

@@ -1,0 +1,323 @@
+var dmsbe_airportcd = {
+"NRT":"1",
+"NGO":"2",
+"KIX":"3",
+"HND":"4",
+"ITM":"5",
+"HKD":"6",
+"AKJ":"7",
+"KUH":"8",
+"OBO":"9",
+"WKJ":"10",
+"CTS":"11",
+"SDJ":"12",
+"AXT":"13",
+"GAJ":"14",
+"KIJ":"15",
+"HIJ":"17",
+"UBJ":"18",
+"TAK":"19",
+"MYJ":"20",
+"KCZ":"21",
+"FUK":"22",
+"KKJ":"23",
+"NGS":"24",
+"KMJ":"25",
+"OIT":"26",
+"KMI":"27",
+"KOJ":"28",
+"OKA":"29",
+"MBE":"30",
+"RIS":"33",
+"SHB":"34",
+"MMB":"35",
+"AOJ":"36",
+"HNA":"37",
+"ONJ":"38",
+"SYO":"39",
+"FKS":"40",
+"HAC":"45",
+"TOY":"47",
+"NTQ":"48",
+"MMJ":"50",
+"SHM":"51",
+"UKB":"52",
+"TTJ":"53",
+"IZO":"54",
+"IWJ":"55",
+"OKJ":"57",
+"HSG":"58",
+"FUJ":"59",
+"IKI":"60",
+"TSJ":"61",
+"TNE":"62",
+"KUM":"63",
+"ASJ":"64",
+"KKX":"65",
+"TKN":"66",
+"OKE":"67",
+"RNJ":"68",
+"MMY":"69",
+"ISG":"70",
+"UEO":"72",
+"SHI":"77",
+"OKD":"81",
+"MSJ":"82",
+"KMQ":"83",
+"YGJ":"84",
+"TKS":"85",
+"NKM":"88",
+"TJH":"89",
+"AXJ":"92",
+"FSZ":"96",
+"IWK":"98"
+};
+
+var dmsbe_airportjson = [
+{
+    "airportInfo": [
+        {
+            "airportCode": 11,
+            "airportName": "札幌/千歳",
+        },
+        {
+            "airportCode": 10,
+            "airportName": "稚内",
+        },
+        {
+            "airportCode": 30,
+            "airportName": "紋別",
+        },
+        {
+            "airportCode": 35,
+            "airportName": "女満別",
+        },
+        {
+            "airportCode": 7,
+            "airportName": "旭川",
+        },
+        {
+            "airportCode": 34,
+            "airportName": "中標津",
+        },
+        {
+            "airportCode": 8,
+            "airportName": "釧路",
+        },
+        {
+            "airportCode": 9,
+            "airportName": "帯広",
+        },
+        {
+            "airportCode": 6,
+            "airportName": "函館",
+        }
+    ],
+    "prefCode": 1,
+    "prefName": "北海道",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 36,
+            "airportName": "青森",
+        },
+        {
+            "airportCode": 38,
+            "airportName": "大館能代",
+        },
+        {
+            "airportCode": 13,
+            "airportName": "秋田",
+        },
+        {
+            "airportCode": 39,
+            "airportName": "庄内",
+        },
+        {
+            "airportCode": 12,
+            "airportName": "仙台",
+        },
+        {
+            "airportCode": 40,
+            "airportName": "福島",
+        }
+    ],
+    "prefCode": 2,
+    "prefName": "東北",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 4,
+            "airportName": "東京/羽田",
+        },
+        {
+            "airportCode": 1,
+            "airportName": "東京/成田",
+        },
+        {
+            "airportCode": 15,
+            "airportName": "新潟",
+        }
+    ],
+    "prefCode": 3,
+    "prefName": "関東・甲信越",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 47,
+            "airportName": "富山",
+        },
+        {
+            "airportCode": 83,
+            "airportName": "小松",
+        }
+    ],
+    "prefCode": 4,
+    "prefName": "北陸",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 96,
+            "airportName": "静岡",
+        },
+        {
+            "airportCode": 2,
+            "airportName": "名古屋/中部",
+        }
+    ],
+    "prefCode": 5,
+    "prefName": "東海",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 5,
+            "airportName": "大阪/伊丹",
+        },
+        {
+            "airportCode": 3,
+            "airportName": "大阪/関西",
+        },
+        {
+            "airportCode": 52,
+            "airportName": "大阪/神戸",
+        }
+    ],
+    "prefCode": 6,
+    "prefName": "関西",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 57,
+            "airportName": "岡山",
+        },
+        {
+            "airportCode": 17,
+            "airportName": "広島",
+        },
+        {
+            "airportCode": 98,
+            "airportName": "岩国錦帯橋",
+        },
+        {
+            "airportCode": 18,
+            "airportName": "山口宇部",
+        },
+        {
+            "airportCode": 53,
+            "airportName": "鳥取",
+        },
+        {
+            "airportCode": 84,
+            "airportName": "米子",
+        },
+        {
+            "airportCode": 55,
+            "airportName": "石見",
+        },
+        {
+            "airportCode": 19,
+            "airportName": "高松",
+        },
+        {
+            "airportCode": 85,
+            "airportName": "徳島",
+        },
+        {
+            "airportCode": 20,
+            "airportName": "松山",
+        },
+        {
+            "airportCode": 21,
+            "airportName": "高知",
+        }
+    ],
+    "prefCode": 7,
+    "prefName": "山陽・山陰・四国",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 22,
+            "airportName": "福岡",
+        },
+        {
+            "airportCode": 23,
+            "airportName": "北九州",
+        },
+        {
+            "airportCode": 58,
+            "airportName": "佐賀",
+        },
+        {
+            "airportCode": 26,
+            "airportName": "大分",
+        },
+        {
+            "airportCode": 25,
+            "airportName": "熊本",
+        },
+        {
+            "airportCode": 24,
+            "airportName": "長崎",
+        },
+        {
+            "airportCode": 61,
+            "airportName": "対馬",
+        },
+        {
+            "airportCode": 60,
+            "airportName": "壱岐",
+        },
+        {
+            "airportCode": 59,
+            "airportName": "五島福江",
+        },
+        {
+            "airportCode": 27,
+            "airportName": "宮崎",
+        },
+        {
+            "airportCode": 28,
+            "__typename": "AirportInfo"
+        }
+    ],
+    "prefCode": 8,
+    "prefName": "九州",
+},{
+    "airportInfo": [
+        {
+            "airportCode": 29,
+            "airportName": "沖縄/那覇",
+        },
+        {
+            "airportCode": 69,
+            "airportName": "宮古",
+        },
+        {
+            "airportCode": 70,
+            "airportName": "石垣",
+        }
+    ],
+    "prefCode": 9,
+    "prefName": "沖縄",
+}
+];

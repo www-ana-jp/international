@@ -1,0 +1,261 @@
+.simulation {
+  padding: 20px 26px 25px;
+  background: #f0f1f4;
+}
+.simulationHeading {
+  margin-top: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.simulationHeadingText {
+  color: #333;
+  font-size: 20px;
+  font-weight: bold;
+}
+.simulationCard {
+  margin-right: 25px;
+}
+.simulation h2.simulationTtl {
+  padding: 0;
+  background: none;
+  border-top: none;
+  color: #022659;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+.simulation h2.simulationTtl span {
+  display: inline-block;
+}
+.simulationInner {
+  margin-top: 18px;
+  padding: 21px 20px;
+  background: #fff;
+}
+.simulationBlock:not(:last-of-type) {
+  margin-bottom: 19px;
+}
+.simulationBlock.normalCard .simulationType {
+  color: #03277f;
+}
+.simulationBlock.normalCard .simulationDetail {
+  color: #123998;
+  background: #e9f3ff;
+}
+.simulationBlock.normalCard .simulationItem {
+  background-image: url(/ja/jp/amc/promo/x212/ach/dm055/img/icon_plus_blue.png);
+}
+.simulationBlock.normalCard .simulationItem.arrow {
+  background-image: url(/ja/jp/amc/promo/x212/ach/dm055/img/icon_arrow_blue.png);
+}
+.simulationBlock.normalCard .simulationItem.border .simulationMiles {
+  border-color: #123998;
+}
+.simulationBlock.normalCard .simulationName {
+  background: #123998;
+}
+.simulationBlock.goldCard .simulationType {
+  color: #664709;
+}
+.simulationBlock.goldCard .simulationDetail {
+  color: #604800;
+  background: #fef6eb;
+}
+.simulationBlock.goldCard .simulationItem {
+  background-image: url(/ja/jp/amc/promo/x212/ach/dm055/img/icon_plus_gold.png);
+}
+.simulationBlock.goldCard .simulationItem.arrow {
+  background-image: url(/ja/jp/amc/promo/x212/ach/dm055/img/icon_arrow_gold.png);
+}
+.simulationBlock.goldCard .simulationItem.border .simulationMiles {
+  border-color: #856609;
+}
+.simulationBlock.goldCard .simulationName {
+  background: #856609;
+}
+.simulationBlock.platinumPremireCard .simulationType {
+  color: #2e3338;
+}
+.simulationBlock.platinumPremireCard .simulationDetail {
+  color: #2e3338;
+  background: #ecedef;
+}
+.simulationBlock.platinumPremireCard .simulationItem {
+  background-image: url(/ja/jp/amc/promo/x212/ach/dm055/img/icon_plus_black.png);
+}
+.simulationBlock.platinumPremireCard .simulationItem.arrow {
+  background-image: url(/ja/jp/amc/promo/x212/ach/dm055/img/icon_arrow_black.png);
+}
+.simulationBlock.platinumPremireCard .simulationItem.border .simulationMiles {
+  border-color: #051a2f;
+}
+.simulationBlock.platinumPremireCard .simulationName {
+  background: #2e3338;
+}
+.simulationType {
+  font-size: 16px;
+  font-weight: bold;
+}
+.simulationDetail {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px;
+}
+.simulationList {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.simulationItem {
+  width: 140px;
+  font-size: 12px;
+  text-align: center;
+}
+.simulationItem:not(.total) {
+  padding-right: 33px;
+  background-repeat: no-repeat;
+  background-position: 95% 88%;
+}
+.simulationItem.arrow {
+  background-repeat: no-repeat;
+  background-position: 95% 50%;
+}
+.simulationItem.border .simulationName {
+  margin-bottom: 0;
+}
+.simulationItem.border .simulationMiles {
+  padding: 7px 10px 3px;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #fff;
+}
+.simulationItem.total {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  background: none !important;
+}
+.simulationItem.total .simulationTotal {
+  width: 1em;
+  font-size: 12px;
+}
+.simulationItem.total .mileNum {
+  color: #c90000;
+  font-size: 25px;
+}
+.simulationName {
+  margin-bottom: 10px;
+  padding: 6px;
+  color: #fff;
+}
+.simulationMiles .mileNum {
+  margin-right: 5px;
+  font-size: 22px;
+  font-weight: bold;
+}
+.simulationCaution {
+  margin-top: 9px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.simulationCautionItem {
+  text-indent: -0.5em;
+  padding-left: 0.5em;
+}
+.simulationBtn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.simulationBtn .btnAreaBlockRelated {
+  position: relative;
+  margin-right: 10px;
+}
+.simulationBtn .btnVerticalSub {
+  padding-right: 40px;
+}
+.simulationBtn .externalLinkIcon {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 0;
+  bottom: 0;
+  left: 10em;
+  right: 0;
+  margin: auto;
+}
+.simulationBtn .externalLinkIcon img {
+  vertical-align: top;
+}
+
+.simulationBtn .btnWidthVariable {
+  min-width: 240px;
+}
+.simulationBtn .externalLinkIcon {
+  left: 12em;
+}
+.simulationBtn .btnMainStream {
+  background-color: #012f64;
+  border: 1px solid #012c64;
+  color: #ffffff;
+}
+.simulationBtn .btnMainStream:hover {
+  background-color: #012454;
+  border: 1px solid #012454;
+  color: #afc3d7;
+}
+.simulationBtn .disabled.btnMainStream:hover {
+  background-color: #e6e6e6;
+  border-color: #e6e6e6;
+  color: #676767;
+}
+.simulationBtn .btnMainStream:focus {
+  background-color: #012454;
+  border: 1px solid #012454;
+  color: #afc3d7;
+}
+.simulationBtn .btnMainStream.btnHover {
+  background-color: #012454;
+  border: 1px solid #012454;
+  color: #afc3d7;
+}
+
+.simulationBtn .btnSubStream {
+  background-color: #d54100;
+  border: 1px solid #d54100;
+  color: #ffffff;
+}
+.simulationBtn .btnSubStream:hover {
+  background-color: #c33c00;
+  border: 1px solid #c33c00;
+  color: #ffffff;
+}
+.simulationBtn .btnSubStream:focus {
+  background-color: #c33c00;
+  border: 1px solid #c33c00;
+  color: #ffffff;
+}
+.simulationBtn .disabled.btnSubStream:hover {
+  background-color: #e6e6e6;
+  border-color: #e6e6e6;
+  color: #676767;
+}

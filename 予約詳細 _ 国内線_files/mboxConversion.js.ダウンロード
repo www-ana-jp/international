@@ -1,0 +1,371 @@
+/*=====================================================
+* Script Name: mboxConversion.js
+* Description: mbox.js function置換用
+* Version: 1.0
+* Version: 1.1 IE 複数parameter対応 & currentScript対応
+* Version: 1.2 AAM demdexパラメータ追加
+* Version: 1.3 FF demdex変数待ち合せ
+* Version: 1.4 mboxLoadSCPlugin対応
+* Version: 1.5 イコール付きmboxパラメータ対応
+* Version: 1.6 IE対応のためlet廃止
+* Version: 1.7 console.log、不要なコメントを削除
+* Version: 1.8 mboxDefine + mboxUpdate以外を判別するフラグを追加
+* Version: 2.0 WebSDK対応
+* Last Up Date: 2024/09/02
+=====================================================*/
+
+var json_getOfferParam = {};
+var atjs_Conversion    = true ;
+var atjs_CVersion      = 2.0 ;
+var atjs_trgObj        = "";
+var mboxLoadSCPlugin   = function () {return null;};
+
+	//Firefox 読み込み順対応で待たせる（暫定）
+	var atjs_userAgent = window.navigator.userAgent.toLowerCase();
+	if(atjs_userAgent.indexOf('firefox') != -1) {
+		var time = new Date().getTime();
+		while (new Date().getTime() < time + 2000);
+	}
+
+	function mboxCreate(mboxName) {
+	
+		var trgObj = "targetObj";
+
+		var v_params=[];
+			var ii = 0;
+			for(var i = 0; i < arguments.length; i++) {
+				if (i > 0) {
+					v_params[ii] = arguments[i] ;
+					ii++;
+				}
+			}
+
+		var v_params_demdex=[];
+		if ((typeof (demdex_raw) != "undefined") && (demdex_raw != "")) {
+			v_params_demdex = v_params.concat(demdex_raw);
+		}else{
+			v_params_demdex = v_params;
+		}
+
+		makeOfferJson(mboxName,v_params_demdex,"."+trgObj);
+
+		at_getOffer(mboxName);
+
+	}
+
+	function mboxDefine(trgObj) {
+
+		var  mboxName="";
+		var  v_params=[];
+
+			var ii = 0;
+			for(var i = 0; i < arguments.length; i++) {
+				if (i == 1)
+					mboxName = arguments[i] ;
+				if (i > 1) {
+					v_params[ii] = arguments[i] ;
+					ii++;
+				}
+			}
+
+		var v_params_demdex=[];
+		if ((typeof (demdex_raw) != "undefined") && (demdex_raw != "")) {
+			v_params_demdex = v_params.concat(demdex_raw);
+		}else{
+			v_params_demdex = v_params;
+		}
+
+		makeOfferJson(mboxName,v_params_demdex,"#"+trgObj);
+
+//mboxDefine + mboxUpdate以外を判別するフラグを追加 Version: 1.8 Start
+window._mcv_mboxDefine = true;
+//mboxDefine + mboxUpdate以外を判別するフラグを追加 Version: 1.8 End
+
+	}
+
+	function mboxUpdate(mboxName) {
+
+		var  v_params=[];
+		var  v_trgObj = json_getOfferParam.mboxName.target;
+
+			var ii = 0;
+			for(var i = 0; i < arguments.length; i++) {
+				if (i > 0) {
+					v_params[ii] = arguments[i] ;
+					ii++;
+				}
+			}
+
+		var v_params_demdex=[];
+		if ((typeof (demdex_raw) != "undefined") && (demdex_raw != "")) {
+			v_params_demdex = v_params.concat(demdex_raw);
+		}else{
+			v_params_demdex = v_params;
+		}
+
+		makeOfferJson(mboxName,v_params_demdex,v_trgObj);
+
+	//mboxDefineで指定したmboxを使うAA-APPMのmboxName Version: 1.4 Start
+
+		var  v_mboxName = json_getOfferParam.mboxName.mbox;
+
+//mboxDefine + mboxUpdate以外を判別するフラグを追加 Version: 1.8 Start
+//		at_getOffer_Update(v_mboxName);
+		if(!window._mcv_mboxDefine){
+			at_getOffer_UpdateOnly(v_mboxName);
+		}else{
+			window._mcv_mboxDefine = false;
+			at_getOffer_Update(v_mboxName);
+		}
+//mboxDefine + mboxUpdate以外を判別するフラグを追加 Version: 1.8 End
+
+	//mboxDefineで指定したmboxを使うAA-APPMのmboxName Version: 1.4 End
+
+	}
+
+	//*************************
+	//** makeOfferJson
+	//*************************
+	function makeOfferJson(mboxName,params,trgObj) {
+		
+		var mboxJson = {};
+		var paramJson = {};
+		
+		if (json_getOfferParam[mboxName]) {
+			mboxJson = json_getOfferParam[mboxName];
+			
+			
+			if (mboxJson["param"]) {
+				paramJson = mboxJson["param"];
+			}
+		}
+
+		if (mboxName) {
+			mboxJson.mbox = mboxName;
+		
+			if (params) {
+				for (var i=0; i<params.length; i++){
+					var keyVal = params[i].split("=");
+					if(keyVal.length > 2){
+						var keyValSet = []
+						for (var j=1; j<keyVal.length; j++){
+							keyValSet.push(keyVal[j]);
+						}
+						paramJson[keyVal[0]] = keyValSet.join("=");
+					}else{
+						if (typeof keyVal[1] !== 'undefined'){
+							paramJson[keyVal[0]] = keyVal[1];
+						}else{
+							paramJson[keyVal[0]] = "";
+						}
+						
+					}
+				}
+			}
+
+		}
+
+		if (trgObj) {
+			mboxJson.target = trgObj;
+		}
+		mboxJson.param = paramJson;
+
+		json_getOfferParam.mboxName = mboxJson;
+		
+	}
+
+	//*************************
+	//** at_getOffer
+	//*************************
+	var at_getOffer = function(mboxName) {
+		var jsonParam = json_getOfferParam.mboxName.param;
+		var trgObj = json_getOfferParam.mboxName.target;
+		//****************************
+		//IE currentScript未対応
+		if ( atjs_userAgent.indexOf('msie') != -1 || atjs_userAgent.indexOf('trident') != -1) {
+
+			var atjs_currentScript = (function() {
+			        if (document.currentScript) {
+			            return document.currentScript;
+			        }
+			        var scripts = document.getElementsByTagName('script');
+
+			        return scripts[scripts.length - 1];
+			    })();
+			var el = atjs_currentScript.previousElementSibling;
+		} else {
+			var el = document.currentScript.previousElementSibling;
+		}
+
+		/*
+		adobe.target.getOffer({
+			mbox: mboxName,
+			params:jsonParam,
+			success: function(offer) {
+			adobe.target.applyOffer({
+				mbox: mboxName,
+				selector: el,
+				offer: offer
+				});
+			},
+			error: function(status, error) {
+				console.log('at_getOffer error', status, error);
+				//el.style.visibility = "visible";
+			}
+		});
+		*/
+		var selectorObj = {};
+		selectorObj["selector"] = fnc_setSelector(el,mboxName);
+		fnc_WebSDk_SendEvent(mboxName, jsonParam, selectorObj);
+
+
+		//*****************************
+	}
+
+	//*************************
+	//** at_getOffer_Update
+	//*************************
+	var at_getOffer_Update = function(mboxName) {
+		var jsonParam = json_getOfferParam.mboxName.param;
+		var trgObj = json_getOfferParam.mboxName.target;
+		//****************************
+
+/*
+		adobe.target.getOffer({
+			mbox: mboxName,
+			params:jsonParam,
+			success: function(offer) {
+			adobe.target.applyOffer({
+				mbox: mboxName,
+				selector: trgObj,
+				offer: offer
+				});
+			},
+			error: function(status, error) {
+				console.log('at_getOffer error', status, error);
+				//el.style.visibility = "visible";
+			}
+		});
+*/
+		var selectorObj = {};
+		
+		selectorObj["selector"] = fnc_setSelector(trgObj,mboxName);
+
+		fnc_WebSDk_SendEvent(mboxName, jsonParam, selectorObj);
+
+		//*****************************
+	}
+
+//mboxDefine + mboxUpdate以外を判別するフラグを追加 Version: 1.8 Start
+	var at_getOffer_UpdateOnly = function(mboxName) {
+		var jsonParam = json_getOfferParam.mboxName.param;
+		var trgObj = json_getOfferParam.mboxName.target;
+		//****************************
+
+/*
+		adobe.target.getOffer({
+			mbox: mboxName,
+			params:jsonParam,
+			success: function(offer) {
+			adobe.target.applyOffer({
+				mbox: mboxName,
+				offer: offer
+				});
+			},
+			error: function(status, error) {
+				console.log('at_getOffer error', status, error);
+				//el.style.visibility = "visible";
+			}
+		});
+*/
+		var selectorObj = {};
+
+		fnc_WebSDk_SendEvent(mboxName, jsonParam, selectorObj);
+
+
+		//*****************************
+	}
+//mboxDefine + mboxUpdate以外を判別するフラグを追加 Version: 1.8 End
+
+	function fnc_setSelector(selector,mboxName) {
+		if (typeof selector == "string") {
+			return selector;
+		} else if (typeof selector == "object") {
+			$(selector).addClass("cls"+mboxName);
+			var _listClassName = selector.className.split(" ");
+			var _className = "."+_listClassName.join(".");
+			return _className;
+		} else {
+			return selector;
+		}
+	}
+
+
+	function fnc_WebSDk_SendEvent(mboxName, jsonParam, selectorObj,count){
+
+		if(typeof count === 'undefined'){count = 1;}
+		if(typeof alloy === 'undefined') {
+			if(count >= 10){
+				console.log("Timeout_fnc_WebSDk_SendEvent");
+				return;
+			}
+			setTimeout(function(){
+				console.log("sc_reload_fnc_WebSDk_SendEvent: "+count+"/10");
+				fnc_WebSDk_SendEvent(mboxName, jsonParam, selectorObj,++count);
+			},1000);
+			return;
+		}
+
+		// Retrieve propositions for homepage_hero location (scope)
+		alloy("sendEvent", {
+			"xdm":{ "eventType": 'decisioning.propositionFetch' },
+			"decisionScopes": [mboxName],
+			"data": {
+				"__adobe": {
+					"target": jsonParam
+				}
+			}
+		}).then(function(result) {
+			var retrievedPropositions = result.propositions;
+			var scope = "";
+
+			if (retrievedPropositions) {
+//				var retrievedProposition =retrievedPropositions ;
+				var retrievedProposition  ;
+				for (var i =0; i< retrievedPropositions.length; i++) {
+					if (mboxName == retrievedPropositions[i].scope) {
+				retrievedProposition = [retrievedPropositions[i]];
+						break;
+						
+					}
+				}
+
+				// Render offer (proposition) to the #hero-banner selector by supplying extra metadata
+				return alloy("applyPropositions", {
+					"propositions": retrievedProposition,
+					"metadata": {
+						// Specify each regional mbox or scope name along with a selector and actionType
+						[mboxName]: {
+							...selectorObj,
+							"actionType": "setHtml"
+						}
+					}
+				}).then(function(applyPropositionsResult) {
+					var renderedPropositions = applyPropositionsResult.propositions;
+
+					// Send the display notifications via sendEvent command
+					alloy("sendEvent", {
+						"xdm": {
+							"eventType": "decisioning.propositionDisplay",
+							"_experience": {
+								"decisioning": {
+									"propositions": renderedPropositions
+								}
+							}
+						}
+					});
+				});
+			}
+		});
+	}
+

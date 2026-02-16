@@ -1,0 +1,35 @@
+/**
+ * @fileoverview 【ユーティリティ】指定したセレクタの位置までスクロール位置を設定する
+ *
+ * @require  jQuery1.8.3
+ * @version  0.01
+ * @update   2015/2/12
+ */
+
+/**
+ * 「Asw.switchDisplay」を使用してシャッターを閉じる際に、指定したセレクタの位置までスクロール位置を設定するメソッド(汎用)<br>
+ *
+ * 「Asw.switchDisplay」を実装している項目に対して、追加して使用する。<br>
+ *
+ * 設置例）
+ * <code>
+ * $('.sendSchedule .iconEmail').on('click' , function(){
+ *     Aswbed.alignThePageWhenSwitchingDisplay(this,'#anc07');
+ *     Aswbed.switchDisplay(this,['.emailSend']);
+ * });
+ * </code>
+ *
+ * @param {Object} _this 'data-boolean'というシャッター開閉判定用属性を参照する要素として使用
+ * @param {String} target スクロールの頭出しをする対象のセレクタ
+ */
+Aswbed.alignThePageWhenSwitchingDisplay = function (_this, target) {
+    'use strict';
+
+    var dataBoolean = _this.attr('data-boolean');
+    if (dataBoolean === undefined) {
+        dataBoolean = 'false';
+    }
+    if (dataBoolean === 'true') {
+        $('html,body').scrollTop($(Aswbed.escapeForIdSelectorString(target)).offset().top);
+    }
+};

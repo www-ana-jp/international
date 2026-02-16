@@ -1,0 +1,1017 @@
+// 1.tassにリクエストする
+var taas_const = {}; // taas.jsの仕様で<script>の直後にvar tass_constを読み込まないと動かない
+
+// ------------------------------
+// Global_ITEMS
+// ------------------------------
+// サーバ
+var dmsbe_url_host = 'https://www.ana.co.jp';
+var dmsbe_url_host2 = 'https://taas.ana.co.jp';
+
+// デバイス判定
+var dmsbe_flagSp = false;
+var dmsbe_strDeviceType  = "pc";
+
+if (typeof Aswbed !== 'undefined' && Aswbed.CommonContext.UserAgent.getDeviceType() === 'SP') {
+	dmsbe_flagSp = true;
+	dmsbe_strDeviceType = "sp";
+}
+
+// スワイプ用変数宣言
+var dmsbe_swiper_unwrap;
+var dmsbe_swiper_targetNode;
+var dmsbe_swiper_config;
+var dmsbe_swiper_callback;
+
+// ------------------------------
+// Global_function
+// ------------------------------
+
+//scmini関数
+function dmsbe_scmini(LinkName) {
+  let tlm_infotag = LinkName;
+  let obj = new Object;
+  obj.linkTrackVars = 'prop1,prop2,prop3,prop4,prop5,prop6,prop7,prop8,prop12,prop13,prop14,prop15,prop17,prop18,prop19,prop49,eVar1,eVar2,eVar3,eVar4,eVar5,eVar6,eVar7,eVar49,eVar55,eVar74,events,channel';
+  obj.prop7 = tlm_infotag;
+  obj.eVar7 = tlm_infotag;
+  setTimeout(function() {
+    dmsbe_SCbackfunc(obj, 'scmini', tlm_infotag);
+  }, 1000);
+}
+//scclick関数
+dmsbe_SCClick = function(LinkName) {
+  let obj = new Object;
+  obj.linkTrackVars = 'prop1,prop2,prop3,prop4,prop5,prop6,prop7,prop8,prop12,prop13,prop14,prop15,prop17,prop18,prop19,prop49,eVar1,eVar2,eVar3,eVar4,eVar5,eVar6,eVar7,eVar49,eVar55,eVar74,events,channel';
+  obj.prop7 = LinkName;
+  obj.eVar7 = LinkName;
+  dmsbe_SCbackfunc(obj, 'scclick', LinkName);
+}
+//AppM対応sc関数
+function dmsbe_SCbackfunc(p_obj, p_fname, p_linkName, count) {
+  if (typeof count === 'undefined') {
+    count = 1;
+  }
+  //Check
+  if (typeof s === 'undefined' || typeof s.tl !== 'function' || typeof setSiteVars !== 'function') {
+    if (count >= 10) {
+      return;
+    }
+    setTimeout(function() {
+      dmsbe_SCbackfunc(p_obj, p_fname, p_linkName, ++count)
+    }, 1000);
+    return;
+  }
+  //OK
+  for (name in p_obj) {
+    s[name] = p_obj[name];
+  }
+  if (p_fname == "scclick") {
+    s.prop13 = SiteCatalystCookie0;
+    s.prop14 = SiteCatalystDateTimeSec;
+  }
+  s.tl(this, 'o', p_linkName);
+}
+//ロードスクリプト
+function dmsbe_loadScript(url, callback) {
+	if ($("script[src='"+url+"']").length > 0) {
+		callback();
+	} else {
+		var script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = url;
+		if ( script.readyState ) {
+			script.onreadystatechange = function() {
+				if ( script.readyState === 'loaded' || script.readyState === 'complete' ) {
+					script.onreadystatechange = null;
+					callback();
+				}
+			};
+		} else {
+			script.onload = function() {
+				callback();
+			};
+		}
+
+		document.getElementsByTagName('head')[0].appendChild(script);
+	}
+}
+
+//--------------------  メインコード  ---------------------------------------------------
+
+//JSロード
+var dmsbe_taasGadget_jsPath = '//taas.ana.co.jp/ja/jp/static-contents/tool/gadget/taas.js';
+
+dmsbe_loadScript(dmsbe_taasGadget_jsPath, function() {
+	dmsbe_load_complete();
+});
+
+//ロード後
+function dmsbe_load_complete(){
+	// ------------------------------
+	// ITEMS
+	// ------------------------------
+	var deptAirPort1='',deptAirPort2='',arivalAirPort1='',arivalAirPort2='',pnr1,pnr2,taas_dateFrom,taas_dateTo,target_a_href;
+	var vCommon='common',qA = '?',aP = '&';
+	
+	//予約詳細はデフォルト「１」
+	//予約完了は大人＋子供
+	var pageName='';
+	pageName=SiteCatalystPageName;
+
+	var adCnt;
+	adCnt = SiteCatalystPaxCount;
+	if(pageName=='DMS_BE_予約詳細確認画面'){
+		adCnt=1;
+	}
+	
+	////utag
+	//到着地
+	var dmsbe_target_dep_airport = utag_data.pnrInfo.segInfoList[0].arvlAirportCode;
+
+	//到着時間取得+セミコロン挿入
+	var dmsbe_arrival_time = utag_data.pnrInfo.segInfoList[0].arvlTime;
+
+	//搭乗日取得
+	var dmsbe_target_dep_year = utag_data.pnrInfo.segInfoList[0].boardingYear;
+	var dmsbe_target_dep_month = utag_data.pnrInfo.segInfoList[0].boardingMonth;
+	var dmsbe_target_dep_day = utag_data.pnrInfo.segInfoList[0].boardingDay;
+
+	//ロケーションから取得するデータ
+	var dmsbe_param_boardingYear='';
+	var dmsbe_param_boardingMonth='';
+	var dmsbe_param_boardingDay='';
+	var dmsbe_param_arvlTime='';
+	var dmsbe_param_arvlAirportCode='';
+
+	//pnrInfoから取得するデータ
+	var dmsbe_pnrInfo_boardingYear;
+	var dmsbe_pnrInfo_boardingMonth;
+	var dmsbe_pnrInfo_boardingDay;
+	var dmsbe_pnrInfo_dep_airport;
+
+	//予約詳細画面パラメータ追加
+	var dmsbe_location_query = document.location.search.substring(2);
+	var dmsbe_location_parameters = dmsbe_location_query.split('&');
+	for (var i = 0,dmsbe_element; i < dmsbe_location_parameters.length; i++) {
+		dmsbe_element = dmsbe_location_parameters[i].split('=');
+
+		if(dmsbe_element[0] === "param_boardingYear"){
+			dmsbe_param_boardingYear = dmsbe_element[1];
+		}
+		if(dmsbe_element[0] === "param_boardingMonth"){
+			dmsbe_param_boardingMonth = dmsbe_element[1];
+		}
+		if(dmsbe_element[0] === "param_boardingDay"){
+			dmsbe_param_boardingDay = dmsbe_element[1];
+		}
+		if(dmsbe_element[0] === "param_arvlTime"){
+			dmsbe_param_arvlTime = dmsbe_element[1];
+		}
+		if(dmsbe_element[0] === "param_arvlAirportCode"){
+			dmsbe_param_arvlAirportCode = dmsbe_element[1];
+		}
+	}
+
+	//パラメータが存在する場合は再設定
+	if (dmsbe_param_boardingYear) {dmsbe_target_dep_year = dmsbe_param_boardingYear;}
+	if (dmsbe_param_boardingMonth) {dmsbe_target_dep_month = dmsbe_param_boardingMonth;}
+	if (dmsbe_param_boardingDay) {dmsbe_target_dep_day= dmsbe_param_boardingDay;}
+	if (dmsbe_param_arvlTime) {dmsbe_arrival_time= dmsbe_param_arvlTime;}
+	if (dmsbe_param_arvlAirportCode) {dmsbe_target_dep_airport= dmsbe_param_arvlAirportCode;}
+	var dmsbe_arrival_time_change = dmsbe_arrival_time.slice(0, 2) + ":" + dmsbe_arrival_time.slice(2, 4);
+
+	var dmsbe_dCd=''; //方面コード directionCd
+	var dmsbe_rCd=''; //地区コード
+	var dmsbe_aCd=''; //地域コード
+	
+	
+	//データに格納されている旅程の数
+	var segSize = utag.data.pnrInfo.segInfoList.length;
+	//seg1,seg3以上
+	if(segSize == 1 || segSize >= 3){
+		pnr1=utag.data.pnrInfo.segInfoList[0];
+		dmsbe_pnrInfo_dep_airport = pnr1.arvlAirportCode;
+		
+		//ボーディング
+		setBordingInfo1(pnr1);
+	}else if(segSize == 2){
+		pnr1=utag.data.pnrInfo.segInfoList[0];
+		pnr2=utag.data.pnrInfo.segInfoList[1];
+		
+		deptAirPort1 = pnr1.deptAirportCode;
+		arivalAirPort1 = pnr1.arvlAirportCode;
+		deptAirPort2 = pnr2.deptAirportCode;
+		arivalAirPort2 = pnr2.arvlAirportCode;
+		
+		//①【seg1の出発地】と【seg2の到着地】を比較し、同じ場合【seg1の到着地】を目的地として扱う+【seg1の出発日】を到着日として扱う
+		//②【seg1の出発地】と【seg2の到着地】を比較し、異なる場合【seg2の到着地】を目的地として扱う+【seg2の出発日】を到着日として扱う
+	
+		//同じ
+		if(deptAirPort1 == arivalAirPort2){
+			dmsbe_pnrInfo_dep_airport = arivalAirPort1;
+			
+			//ボーディング
+			setBordingInfo1(pnr1);
+		//違う
+		}else{
+			dmsbe_pnrInfo_dep_airport = arivalAirPort2;
+			
+			//ボーディング
+			setBordingInfo1(pnr2);
+		}
+	}
+	
+	//値が存在していれば上書きする
+	if (dmsbe_pnrInfo_boardingYear) {dmsbe_target_dep_year = dmsbe_pnrInfo_boardingYear;}
+	if (dmsbe_pnrInfo_boardingMonth) {dmsbe_target_dep_month = dmsbe_pnrInfo_boardingMonth;}
+	if (dmsbe_pnrInfo_boardingDay) {dmsbe_target_dep_day = dmsbe_pnrInfo_boardingDay;}
+	if (dmsbe_pnrInfo_dep_airport) {dmsbe_target_dep_airport = dmsbe_pnrInfo_dep_airport;}
+
+	//札幌・千歳 空港コード変換
+	if(dmsbe_target_dep_airport == 'SPK'){dmsbe_target_dep_airport = 'CTS';}
+	
+	
+	//ホテルに使うデータ
+	taas_dateFrom = dmsbe_target_dep_year.toString().concat("-",dmsbe_target_dep_month.toString(),"-",dmsbe_target_dep_day.toString());
+
+	var chDate = new Date(parseInt(dmsbe_target_dep_year), parseInt(dmsbe_target_dep_month) - 1, parseInt(dmsbe_target_dep_day) + 1);
+                            
+    var strYear = chDate.getFullYear();
+    var strMmonth = chDate.getMonth() + 1;
+    var strDay = chDate.getDate();
+
+    strMmonth = ('0' + strMmonth).slice(-2);
+    strDay = ('0' + strDay).slice(-2);
+
+    var formatCheckoutDate = 'YYYY-MM-DD';
+    formatCheckoutDate = formatCheckoutDate.replace(/YYYY/g, strYear);
+    formatCheckoutDate = formatCheckoutDate.replace(/MM/g, strMmonth);
+    formatCheckoutDate = formatCheckoutDate.replace(/DD/g, strDay);
+                            
+	taas_dateTo = formatCheckoutDate;
+	//taas_dateTo =strYear.toString().concat("-",strMmonth.toString(),"-",strDay.toString());
+	//console.log('asd 046 dateTo   ' + taas_dateTo);
+	
+	//レンタカーバナーに使うデータ
+	//搭乗日値をnew dateへ入れる
+	var dmsbe_dateAttr = new Date(dmsbe_target_dep_year + "/" + dmsbe_target_dep_month + "/" + dmsbe_target_dep_day + " " + dmsbe_arrival_time_change);
+	//////var dmsbe_dateAttr = new Date("2023" + "/" + "01" + "/" + "05" + " " + "10:15");
+
+	//分に40分加算して10分刻みに変換　例：飛行機10:55着→＋40分→11:35→11:40セット
+	dmsbe_dateAttr.setMinutes(Math.ceil((dmsbe_dateAttr.getMinutes() + 40) / 10) * 10);
+
+	//dmsbe_dateAttrから返却日計算、40分足す前にするなら処理順を上にずらす
+	var dmsbe_todateAttr = new Date(dmsbe_dateAttr.getTime());
+	dmsbe_todateAttr.setDate(dmsbe_todateAttr.getDate() + 1);
+	
+	
+	// ------------------------------
+	// function
+	// ------------------------------
+	//taas テキスト文字省略
+	function textLimit() {
+		const textLimit = document.querySelectorAll('.taas-text-limit');
+		textLimit.forEach((text) => {
+			const textContent = text.textContent;
+			const textLength = textContent.length;
+			if (textLength > 30) {
+				text.textContent = text.textContent.slice(0, 30) + '...';
+			}
+		});
+	}
+	
+	//レンタカー バナーURLの生成
+	function create_url (target_dep_airport) {
+		var bannerRCode = dmsbe_airportcd[target_dep_airport];
+		var airportCode = '';
+		var prefCode = '';
+		var airport3letter = '';
+		var returnBannerUrl = dmsbe_url_host + '/ja/jp/domestic/taas/car/';
+
+		for(let a=0; a < dmsbe_airportjson.length; a++){
+			for(let b=0; b < dmsbe_airportjson[a]['airportInfo'].length; b++){
+				airportCode = dmsbe_airportjson[a]['airportInfo'][b]['airportCode'];
+
+				// dmsbe_airportjsonにbannerRCodeが存在したら
+				if(bannerRCode == airportCode){
+					prefCode = dmsbe_airportjson[a]['prefCode']; // 地域コード
+					//airport3letter = getKeyByValue(airportcd, airportCode); // airportCodeを元に3レターを取得
+					returnBannerUrl = dmsbe_url_host2 + '/ja/jp/rental-car/search/plan?rnt=sv&startDate=' + AT_dayEdit(dmsbe_dateAttr) + '&startTime=' + zero(dmsbe_dateAttr.getHours()) + zero(dmsbe_dateAttr.getMinutes()) + '&endDate=' + AT_dayEdit(dmsbe_todateAttr) + '&endTime=1800' + '&fromAirport=' + bannerRCode + '&fromAirportArea=' + prefCode;
+					break;
+				}
+			}
+		}	
+		
+		return returnBannerUrl;
+	}
+	//ゼロ埋め関数
+	function zero(text) {
+	    return ('0' + text).slice(-2);
+	}
+	//yyyymmddを返す関数
+	function AT_dayEdit(dateObj) {
+	    var year = '' + dateObj.getFullYear(),
+	        month = zero(dateObj.getMonth() + 1),
+	        date = zero(dateObj.getDate());
+	    return year + month + date;
+	}
+	
+	function getKeyByValue (object, value) {
+		return Object.keys(object).find((key) => object[key] === value);
+	}
+	//set bording info
+	function setBordingInfo1(_pnr) {
+		dmsbe_pnrInfo_boardingYear = _pnr.boardingYear;
+		dmsbe_pnrInfo_boardingMonth = zero(_pnr.boardingMonth);
+		dmsbe_pnrInfo_boardingDay = zero(_pnr.boardingDay);
+	}
+	/*
+	//set setCommonInfo
+	function setCommonInfo() {
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x221/data/be/images/dto170_hotel_common.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x221/data/be/images/dto170_hotel_common_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_common_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_common_' + dmsbe_strDeviceType;
+	}
+	//set setDirection
+	function setDirection(targetDest) {
+		
+		if(targetDest=='SPK'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='001';
+		} else if(targetDest=='RIS'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='012';
+			dmsbe_aCd='063';
+		} else if(targetDest=='WKJ'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='012';
+			dmsbe_aCd='062';
+		} else if(targetDest=='MBE'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='010';
+		} else if(targetDest=='MMB'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='010';
+		} else if(targetDest=='AKJ'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='004';
+		} else if(targetDest=='SHB'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='011';
+		} else if(targetDest=='KUH'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='011';
+		} else if(targetDest=='OBO'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='006';
+		} else if(targetDest=='HKD'){
+			dmsbe_dCd='02';
+			dmsbe_rCd='009';
+		} else if(targetDest=='AOJ'){
+			dmsbe_dCd='08';
+			dmsbe_rCd='401';
+		} else if(targetDest=='ONJ'){
+			dmsbe_dCd='08';
+			dmsbe_rCd='403';
+		} else if(targetDest=='AXT'){
+			dmsbe_dCd='08';
+			dmsbe_rCd='403';
+		} else if(targetDest=='SYO'){
+			dmsbe_dCd='08';
+			dmsbe_rCd='405';
+		} else if(targetDest=='SDJ'){
+			dmsbe_dCd='08';
+			dmsbe_rCd='404';
+		} else if(targetDest=='FKS'){
+			dmsbe_dCd='08';
+			dmsbe_rCd='406';
+		} else if(targetDest=='HND'){
+			dmsbe_dCd='07';
+			dmsbe_rCd='301';
+		} else if(targetDest=='NRT'){
+			dmsbe_dCd='07';
+			dmsbe_rCd='303';
+		} else if(targetDest=='HAC'){
+			dmsbe_dCd='07';
+			dmsbe_rCd='301';
+			dmsbe_aCd='314';
+		} else if(targetDest=='FSZ'){
+			dmsbe_dCd='15';
+			dmsbe_rCd='802';
+		} else if(targetDest=='NGO'){
+			dmsbe_dCd='15';
+			dmsbe_rCd='801';
+		} else if(targetDest=='KIJ'){
+			dmsbe_dCd='07';
+			dmsbe_rCd='308';
+		} else if(targetDest=='TOY'){
+			dmsbe_dCd='14';
+			dmsbe_rCd='702';
+		} else if(targetDest=='KMQ'){
+			dmsbe_dCd='14';
+			dmsbe_rCd='701';
+		} else if(targetDest=='NTQ'){
+			dmsbe_dCd='14';
+			dmsbe_rCd='701';
+		} else if(targetDest=='ITM'){
+			dmsbe_dCd='10';
+			dmsbe_rCd='501';
+		} else if(targetDest=='KIX'){
+			dmsbe_dCd='10';
+			dmsbe_rCd='501';
+		} else if(targetDest=='UKB'){
+			dmsbe_dCd='10';
+			dmsbe_rCd='503';
+		} else if(targetDest=='OKJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='602';
+		} else if(targetDest=='HIK'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='601';
+		} else if(targetDest=='HIJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='601';
+		} else if(targetDest=='IWK'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='605';
+		} else if(targetDest=='UBJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='605';
+		} else if(targetDest=='TTJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='603';
+		} else if(targetDest=='YGJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='603';
+		} else if(targetDest=='IWJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='604';
+		} else if(targetDest=='TAK'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='607';
+		} else if(targetDest=='TKS'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='606';
+		} else if(targetDest=='MYJ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='608';
+		} else if(targetDest=='KCZ'){
+			dmsbe_dCd='11';
+			dmsbe_rCd='609';
+		} else if(targetDest=='NKY'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='201';
+		} else if(targetDest=='FUK'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='201';
+		} else if(targetDest=='KKJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='201';
+		} else if(targetDest=='HSG'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='202';
+		} else if(targetDest=='OIT'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='205';
+		} else if(targetDest=='KMJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='204';
+		} else if(targetDest=='NGS'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='203';
+		} else if(targetDest=='TSJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='203';
+			dmsbe_aCd='222';
+		} else if(targetDest=='IKI'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='203';
+			dmsbe_aCd='222';
+		} else if(targetDest=='FUJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='203';
+			dmsbe_aCd='223';
+		} else if(targetDest=='AXJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='204';
+			dmsbe_aCd='230';
+		} else if(targetDest=='KMI'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='206';
+		} else if(targetDest=='KOJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+		} else if(targetDest=='TNE'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='247';
+		} else if(targetDest=='KUM'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='246';
+		} else if(targetDest=='KKX'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='250';
+		} else if(targetDest=='RNJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='251';
+		} else if(targetDest=='ASJ'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='252';
+		} else if(targetDest=='TKN'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='250';
+		} else if(targetDest=='OKE'){
+			dmsbe_dCd='05';
+			dmsbe_rCd='207';
+			dmsbe_aCd='250';
+		} else if(targetDest=='OKA'){
+			dmsbe_dCd='03';
+			dmsbe_rCd='101';
+		} else if(targetDest=='MMY'){
+			dmsbe_dCd='03';
+			dmsbe_rCd='103';
+			dmsbe_aCd='113';
+		} else if(targetDest=='ISG'){
+			dmsbe_dCd='03';
+			dmsbe_rCd='102';
+			dmsbe_aCd='108';
+		}
+	}
+	*/
+	
+
+	/* // ホテル用設定
+	var bnrSrc='';
+		
+	if(targetDest=='HND'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_hnd.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_hnd_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_hnd_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_hnd_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='ITM'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_itm.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_itm_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_itm_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_itm_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='SPK'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_spk.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_spk_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_spk_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_spk_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='OKA'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_oka.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_oka_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_oka_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_oka_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='FUK'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_fuk.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_fuk_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_fuk_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_fuk_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='NGO'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_ngo.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_ngo_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_ngo_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_ngo_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='MYJ'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_myj.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_myj_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_myj_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_myj_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='KIX'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_kix.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_kix_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_kix_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_kix_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='SDJ'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_sdj.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_sdj_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_sdj_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_sdj_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='KOJ'){
+				if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_koj.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_koj_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_koj_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_koj_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+	}else if(targetDest=='HIJ'){
+		if(!dmsbe_flagSp){
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_hij.jpg';
+		}else{
+			bnrSrc = '/amc/promo/x212/data/be/images/dto170_hotel_hij_sp.jpg';
+		}
+		tlm_scclick_046 ='click_jp_dms_be_bnr_appeal_dto170_hotel_hij_' + dmsbe_strDeviceType;
+		tlm_view_046 ='view_jp_dms_be_bnr_appeal_dto170_hotel_hij_' + dmsbe_strDeviceType;
+		setDirection(targetDest);
+
+	}else{
+		setCommonInfo();
+		setDirection(targetDest);
+
+	}
+	*/
+	
+	
+	// レンタカー・タクシー
+	var bnrSrc_rentalcar = '';
+	var bnrSrc_taxi = '';
+	
+	if(!dmsbe_flagSp){
+		bnrSrc_rentalcar = '/amc/dmsbe/images/banner/rentalcar_250829_pc.jpg';
+		bnrSrc_taxi = '/amc/dmsbe/images/banner/higher_240930.png';
+	}else{
+		bnrSrc_rentalcar = '/amc/dmsbe/images/banner/rentalcar_240930.jpg';
+		bnrSrc_taxi = '/amc/dmsbe/images/banner/higher_240930.png';
+	}
+	
+	//レンタカー バナーURLの生成
+	var bannerUrl = create_url(dmsbe_target_dep_airport);
+	
+	// ホテル seg3以上はパラメーターつけない
+	/*
+	if(segSize <=2 ){
+		target_a_href = "https://taas.ana.co.jp/ja/jp/hotel/search" + qA + "directionCd=" + dmsbe_dCd + aP + "regionCd="+ dmsbe_rCd + aP +  "areaCd="+ dmsbe_aCd + aP + "adultUsers="+ adCnt + aP + "dateFrom="+ taas_dateFrom + aP + "dateTo="+ taas_dateTo + aP + "sort=RECOMMEND";
+	}else{
+		target_a_href = "https://www.ana.co.jp/ja/jp/domestic/theme/hotel/";
+	}
+	*/
+
+	// Maasコンテンツ情報配列マップ
+	var listMaasClickInfo = [
+		// 1枚目
+//		{
+// 			img_src: dmsbe_url_host + "/amc/promo/x212/data/be/images/hotel_210928.jpg",
+//			img_src: dmsbe_url_host + bnrSrc,
+//			title: "ホテル",
+//			text : "ホテルの予約だけでも、マイルが貯まる！しかも1円＝1マイルから使える！",
+//			icon_alt: "新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" ,
+// 			a_href:  dmsbe_url_host + "/ja/jp/domtour/hotel/kashikokumile/",
+//			a_href:  dmsbe_url_host + "/ja/jp/domestic/theme/hotel",
+//			a_href: target_a_href,
+//			//scclick: "click_"+dmsbe_strDeviceType+"_jp_dms_be_bnr_appeal_dto170_hotel",
+//			scclick: tlm_scclick_046,
+//			banner_alt: "航空券をご予約の方へのマイルが貯まる・使えるおすすめホテルプランはこちら"
+//		},
+		// 2枚目
+		{
+			//img_src: dmsbe_url_host + "/amc/promo/x212/data/be/images/rentalcar_210928.jpg",
+			//img_src: dmsbe_url_host + "/amc/dmsbe/images/rentalcar_210928.jpg",
+			img_src: dmsbe_url_host + bnrSrc_rentalcar,
+			title: "レンタカー",
+			text :"ご利用便にあわせて簡単にご予約可能！航空券をご予約いただいたお客様限定の特別プランもご用意！",
+			icon_alt:"新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" ,
+			//a_href:  dmsbe_url_host + "/ja/jp/domestic/rental_car/",
+			a_href: bannerUrl,
+			scclick: "click_"+dmsbe_strDeviceType+"_jp_dms_be_bnr_appeal_dto170_rentacar",
+			banner_alt: "100円につき1マイルが貯まるANA traveler’s レンタカー"
+
+		},
+		// 3枚目
+		{
+			//img_src: dmsbe_url_host + "/amc/promo/x212/data/be/images/higher_210928.jpg",
+			img_src: dmsbe_url_host + bnrSrc_taxi,
+			title: "タクシー&ハイヤー",
+			text : "空港と指定場所を直行で送迎！定額料金で飛行機の遅延・欠航にも安心対応！",
+			icon_alt:"新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。" ,
+			a_href:  dmsbe_url_host + "/ja/jp/book-plan/airport-transfer.html",
+			scclick: "click_"+dmsbe_strDeviceType+"_jp_dms_be_bnr_appeal_dto170_maas",
+			banner_alt: "マイルが貯まる 提携パートナーも あんしん便利な空港送迎予約サービス"
+		}
+	];
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ファイルロード
+	var dmsbe_cssPath = document.createElement('link');
+		dmsbe_cssPath.rel="stylesheet";
+		dmsbe_cssPath.href= dmsbe_url_host + '/amc/dmsbe/css/swiper-bundle.css';
+	document.getElementsByTagName('head')[0].appendChild(dmsbe_cssPath);
+	
+	// HTMLの生成
+	//テンプレート
+	var template_gadget = document.createElement('script');
+		template_gadget.type = 'text/html';
+		template_gadget.id = 'taas_gadget_rec_template';
+		template_gadget.innerHTML = `
+  %%CONTENTS_FIELD%%
+`;
+	document.getElementsByTagName('body')[0].appendChild(template_gadget);
+	
+	var template_gadget_content = document.createElement('script');
+		template_gadget_content.type = 'text/html';
+		template_gadget_content.id = 'taas_gadget_content_template';
+		template_gadget_content.innerHTML = `
+	<div class="swiper-slide">
+		<div class="asw-card asw-card--nopadding asw-card--tag asw-card--border-none">
+			<div class="asw-card__inner">
+				<a class="asw-tag-card__link" href="%%DETAIL_URL%%" target="_blank" onclick="dmsbe_SCClick('ja_be_hotel_price_%%HOTEL_REGION%%_$$SLIDE_INDEX$$_%%HOTELNAME%%'); return true;">
+					<div class="asw-tag-card__image-wrapper" style=" overflow: auto; padding-top: 0; position: static;">
+						<img class="asw-tag-card__image" src="%%PICTUREURL%%" alt="" style="aspect-ratio: 4/3; position: static; width: 100%; height: auto; object-fit: cover;">
+					</div>
+					<div class="asw-tag-card__inner">
+						<div class="asw-tag-card__contents">
+							<p class="asw-tag-card__txt asw-tag-card__area-name">%%HOTEL_REGION%%</p>
+							<p class="asw-tag-card__title asw-tag-card__txt--lg">%%HOTELNAME%%</p>
+							%%TRIPADVISOR%%
+							<p class="asw-tag-card__txt asw-tag-card__txt--sm taas-text-limit">%%CATCHPHRASE%%</p>
+							<p class="asw-tag-card__price asw-tag-card__txt--lg asw-tag-card__txt--red">
+								<strong>大人：%%PERSONALIZE_PRICE%%</strong>
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+`;
+	document.getElementsByTagName('body')[0].appendChild(template_gadget_content);
+	
+	var template_gadget_other = document.createElement('script');
+		template_gadget_other.type = 'text/html';
+		template_gadget_other.id = 'taas_gadget_template';
+		template_gadget_other.innerHTML = `
+						<a class="asw-card asw-card--nopadding asw-card--tag" href="%%OTHER_HOTEL_SEARCH%%" target="_blank" onclick="dmsbe_SCClick('ja_be_hotel_view'); return true;" style="display:none;">
+							<div class="asw-card__inner">
+								<div class="images">
+									<img src="` + dmsbe_url_host + `/amc/dmsbe/images/icon_hotel_other.png" alt="">
+								</div>
+								<p class="text">他の宿を探す<img src="` + dmsbe_url_host + `/amc/dmsbe/images/icon_external_24.png" alt="新しいウィンドウで開く。外部サイトの場合はアクセシビリティガイドラインに対応していない可能性があります。"></p>
+							</div>
+						</a>
+`;
+	document.getElementsByTagName('body')[0].appendChild(template_gadget_other);
+
+
+	//メインエリア
+	var input_banner = '';
+	// コンテンツ部分（input_banner）
+	input_banner = `
+<div id="dmsbe_result_recommend" class="section">
+	<div id="dmsbe_result_recommend_area">
+		<h2>「マイルが貯まる、使える」<br>ホテル・レンタカー等のご予約はお済みですか？</h2>
+`;
+
+	//ホテル
+	input_banner += `
+		<div class="asw-swipLayout swiper-hotel--dmsbe__wrap gadgetCarouselClass" data-pc-disable-device="">
+
+			<div class="asw-swipLayout__button-body">
+				<div class="asw-swipLayout__button-inner">
+					<div class="asw-swipLayout__button--prev swiper-hotel--dmsbe-button-prev" role="button" tabindex="0" aria-disabled="false" aria-label="Previous slide">
+					</div>
+				</div>
+			</div>
+
+			<div class="asw-swipLayout__container asw-swipLayout__container--scrollbar swiper-hotel--dmsbe">
+				<div class="swiper-wrapper">
+					<!-- 各スライド -->
+					<!-- gadget-output-dmsbe_recommend_hotel  -->
+					<div class="swiper-slide" id="gadget-output-dmsbe_recommend_hotel"></div>
+					<!-- gadget-output-search-box  -->
+					<div class="swiper-slide" id="gadget-output-search-box"></div>
+				</div>
+				<div class="asw-swipLayout__scrollbar swiper-hotel--dmsbe-scrollbar">
+					<div class="swiper-scrollbar-drag" tabindex="0"></div>
+				</div>
+			</div>
+
+			<div class="asw-swipLayout__button-body">
+				<div class="asw-swipLayout__button-inner">
+					<div class="asw-swipLayout__button--next swiper-hotel--dmsbe-button-next" role="button" tabindex="0" aria-disabled="false" aria-label="Next slide"></div>
+				</div>
+			</div>
+
+		</div>
+`;
+
+	//レンタカー・タクシーのボタン
+	input_banner += '<ul class="dmsbe_result_rentalcar_higher">';
+	
+	//PC
+	if(!dmsbe_flagSp){
+		for (var i = 0; i < listMaasClickInfo.length; i++) {
+			input_banner += '<li><a href="'+listMaasClickInfo[i]["a_href"]+'" onclick="dmsbe_SCClick(\''+listMaasClickInfo[i]["scclick"]+'\');return true;" target="_blank" ><p class="dmsbe_title">'+listMaasClickInfo[i]["title"]+'</p><span class="inner"><p class="dmsbe_img"><img src="'+listMaasClickInfo[i]["img_src"]+'" alt="' + listMaasClickInfo[i]["banner_alt"] +'" width="100%"></p><p class="dmsbe_txt">'+listMaasClickInfo[i]["text"]+'<span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_BLU.png" alt="'+listMaasClickInfo[i]["icon_alt"]+'" width="10" height="10"></span></p></span></a></li>';
+		}
+	//SP
+	}else{
+		for (var i = 0; i < listMaasClickInfo.length; i++) {
+			input_banner += '<li><a href="'+listMaasClickInfo[i]["a_href"]+'" onclick="dmsbe_SCClick(\''+listMaasClickInfo[i]["scclick"]+'\');return true;" target="_blank" ><p class="dmsbe_title">'+listMaasClickInfo[i]["title"]+'</p><p class="dmsbe_img"><img src="'+listMaasClickInfo[i]["img_src"]+'"  alt="' + listMaasClickInfo[i]["banner_alt"] +'" width="100%">' + '<span class="externalLinkIcon"><img src="https://www.ana.co.jp/common-layout/images/icon_blank_BLU.png" class="dmsbe_external" alt="'+listMaasClickInfo[i]["icon_alt"]+'" width="10" height="10"></span></p></a></li>';
+		}
+	}
+	
+	
+	//エンド部分
+	input_banner += '</ul>'
+	
+	input_banner += `
+	</div>
+</div>
+`;
+
+	//// バナー挿入
+	var dmsbe_rec_selector;
+	// 挿入位置セレクタ（予約完了で共通）
+	var selector_other = $('.supportMenu').parents('.section');
+	var selector_otherID = $('#sisu-insurance-offer');
+	// 挿入位置セレクタ（予約詳細）
+	var selector_details = $('#tabFlight').parents('.tabContents');
+	
+	if(pageName=='DMS_BE_予約詳細確認画面'){
+		//挿入位置セレクタが存在しなかった場合は処理を停止する
+		if(selector_details.length == 0){return;}
+		//最初のセレクタに実装する
+		dmsbe_rec_selector = selector_details.eq(0);
+		//下に設置
+		dmsbe_rec_selector.after(input_banner);
+	}else {
+		//IDが存在している場合はそれを使う
+		if(selector_otherID.length != 0){
+			dmsbe_rec_selector = selector_otherID.eq(0);
+		}
+		//クラス
+		else if(selector_other.length != 0){
+			dmsbe_rec_selector = selector_other.eq(0);
+		}
+		//挿入位置セレクタが存在しなかった場合は処理を停止する
+		else{return;}
+		//上に設置
+		dmsbe_rec_selector.before(input_banner);
+	}
+	
+	
+
+	//JSロード
+	var swiper_jsPath = dmsbe_url_host + '/amc/dmsbe/swiper-bundle.min.js';
+	dmsbe_loadScript(swiper_jsPath, function() {
+		dmsbe_swiperload_complete();
+	});
+	//ロード後
+	function dmsbe_swiperload_complete(){
+		//	/www2/ja/jp/top/js/taas_const.js
+		try {
+			taas_const = {};
+			taas_const.template_id = "taas_gadget_rec_template";
+			taas_const.content_template_id = "taas_gadget_content_template"
+			taas_const.content_output_id = "gadget-output-dmsbe_recommend_hotel";
+			taas_const.pageLimit = 3;
+			taas_const.idMode = "PERSONALIZE_FROM_AIR";
+			taas_const.arrival_airport = dmsbe_target_dep_airport;// 空港コード参照
+			taas_const.dateFrom = taas_dateFrom;
+			taas_const.dateTo = taas_dateTo;
+			// 2.domが生成される
+			createTaaSJSGadget();
+			
+			// 他の宿を探すボタンの生成
+			taas_const = {};
+			taas_const.template_id = "taas_gadget_template"
+			taas_const.content_output_id = "gadget-output-search-box";
+			taas_const.arrival_airport = dmsbe_target_dep_airport;// 空港コード参照
+			taas_const.dateFrom = taas_dateFrom;
+			taas_const.dateTo = taas_dateTo;
+			// 2.domが生成される
+			createTaaSJSGadgetSearchBox();
+			
+			var scmini ='view_jp_dms_be_bnr_appeal_dto170_hotel_' + dmsbe_target_dep_airport.toLowerCase() + '_' + dmsbe_strDeviceType;
+			dmsbe_scmini(scmini);
+			
+		} catch (error) {
+			throw console.error(error)
+		}
+		
+		
+		//	/www2/ja/jp/top/js/swiper_function.js
+		// 3.unwrapする
+		dmsbe_swiper_unwrap = target => {
+			if (typeof target === 'null' || typeof target === 'undefined') return // ターゲットが存在しない場合は処理を中断
+			while (target.firstChild) {
+				target.parentNode.insertBefore(target.firstChild, target);
+			}
+			target.remove();
+		};
+
+		// 変更を監視するノードを選択
+		const targetNode = document.querySelector(".swiper-hotel--dmsbe");
+
+		// (変更を監視する) オブザーバーのオプション
+		const config = { childList: true, subtree: true };
+
+		// 変更が発見されたときに実行されるコールバック関数
+		const callback = function (mutationsList, observer) {
+			for (const mutation of mutationsList) {
+				if (mutation.type !== "childList") continue // swiperに子要素の変更以外はスキップ
+				if (mutation.removedNodes.length > 0){ // ローディング画像削除時
+					//件数0
+					const no_result_message = document.querySelector('#gadget-output-dmsbe_recommend_hotel .gadget_no_result_message');
+					if(no_result_message){
+						document.querySelector('.swiper-hotel--dmsbe__wrap').remove();
+					}
+						
+					continue;
+				}
+				if (mutation.target.classList.contains('swiper-slide')) { // swiperの子要素「swiper-slide」のスライドを含む変更の時のみ
+					Array.from(mutation.target.children).forEach((element, index) => {
+						//テキスト文字省略
+						textLimit();
+						
+						const currentlink = element.querySelector('.asw-tag-card__link');
+						if(currentlink){
+							const currentlinkGet = currentlink.getAttribute('onclick');
+							if(currentlinkGet){
+								// 各スライダーのidの末尾に合わせてscclickの連番を付与
+								const currentSlideIndex = index-0+1;
+								currentlink.setAttribute('onclick',currentlinkGet.replace("$$SLIDE_INDEX$$", currentSlideIndex));
+							}
+						}
+					});
+					
+					const styleBlock = document.querySelector('#gadget-output-search-box .asw-card');
+					if(styleBlock){
+						styleBlock.removeAttribute('style');//他の宿を探すボタンの表示
+					}
+					
+					dmsbe_swiper_unwrap(mutation.target) // swiperのDOM構造を整形
+				}
+			}
+		};
+
+		// コールバック関数に結びつけられたオブザーバーのインスタンスを生成
+		const observer = new MutationObserver(callback);
+		try {
+			// 対象ノードの設定された変更の監視を開始
+			observer.observe(targetNode, config);
+
+			const swiper = new Swiper('.swiper-hotel--dmsbe', {
+				direction: 'horizontal',
+				navigation: {
+					nextEl: '.swiper-hotel--dmsbe-button-next',
+					prevEl: '.swiper-hotel--dmsbe-button-prev',
+				},
+				slidesPerView: 1,
+				loop: false,
+				breakpoints: {
+					768: {
+						slidesPerView: 4,
+					}
+				},
+				scrollbar: {
+					el: '.swiper-hotel--dmsbe-scrollbar',
+					hide: false,
+					draggable: true
+				},
+			});
+		} catch (error) {
+			throw console.error(error)
+		}
+	}//END dmsbe_swiperload_complete
+
+}//END dmsbe_load_complete
+

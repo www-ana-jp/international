@@ -1,0 +1,23 @@
+/**
+ * @fileoverview リンクを非活性（クリック不可、フォーカス不可）にする処理
+ *
+ * @require  jQuery1.8.3
+ * @version  0.01
+ * @update   2022/5/16
+ */
+
+//【実行文】
+$(function () {
+	'use strict';
+
+	// フォーカス不可に
+	$('.jsDisabledLink').each(function(){
+		$(this).attr('tabindex','-1')
+	});
+
+	// クリック不可に
+	$('.jsDisabledLink').on('click', function(){
+		return false;
+	});
+
+});

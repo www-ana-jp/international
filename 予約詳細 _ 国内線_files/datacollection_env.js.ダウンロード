@@ -1,0 +1,231 @@
+data= 
+{
+	"TOP_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/0722d0629602/launch-43230395b505-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/0722d0629602/launch-a6edc7e460f0.min.js"
+	}
+	],
+	"DMS_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/d86a0b4af4d7/launch-91ea2e6531f8-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/d86a0b4af4d7/launch-2c14bd2565d9.min.js"
+	}
+	],
+	"TOP_top_contents_AppM_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/4e792de1d56a/launch-6d23d86c58ae-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/4e792de1d56a/launch-fe5b94547ed5.min.js"
+	}
+	],
+	"CONTENTS_top_contents_AppM_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/38bf9835e9eb/launch-e02e0419ef84-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/38bf9835e9eb/launch-e6a061a54e9f.min.js"
+	}
+	],
+	"DMS_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/430925609c7c/launch-b018942689a7-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/430925609c7c/launch-70faeef0031e.min.js"
+	}
+	],
+	"DMS_SP_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/5af70a155e81/launch-89fbf3ca662f-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/5af70a155e81/launch-f13b3621f2da.min.js"
+	}
+	],
+	"INT_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/ddbd1723beef/launch-b98e867b6bd1-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/ddbd1723beef/launch-3860a3a49881.min.js"
+	}
+	],
+	"INT_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/dcbc9ed16f2e/launch-d7cf395f5321-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/dcbc9ed16f2e/launch-d73c37108c68.min.js"
+	}
+	],
+	"INT_SP_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/0a05cb17981b/launch-4d28cbd6509c-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/0a05cb17981b/launch-9a660d2198ce.min.js"
+	}
+	],
+	"CONTENTS_top_contents_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/915bcab77e04/launch-976e55cfc11d-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/915bcab77e04/launch-765d3462ca62.min.js"
+	}
+	],
+	"TRAVEL_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/e73dd07c3b55/launch-85d24ac43534-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/e73dd07c3b55/launch-f9a7fd4d3c3b.min.js"
+	}
+	],
+	"TRAVEL_top_contents": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/dd1f8f86c350/launch-0665b5cfe6c4-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/dd1f8f86c350/launch-c8040fa4a12a.min.js"
+	}
+	],
+	"TRAVEL_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/8a6b09c6e5dd/launch-fab0d26208fb-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/8a6b09c6e5dd/launch-3b29af7de0d9.min.js"
+	}
+	],
+	"TRAVEL_SP_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/d0329768ecc0/launch-572cbe728207-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/d0329768ecc0/launch-29f978324f56.min.js"
+	}
+	],
+	"AMC_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/58624759fe0e/launch-df50a08d84db-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/58624759fe0e/launch-1a1b3e5b2fb6.min.js"
+	}
+	],
+	"AMC": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/dd3987bf5571/launch-b5ebe28212c4-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/dd3987bf5571/launch-3bf97d1a58df.min.js"
+	}
+	],
+	"AMC_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/9745eb8f9ab2/launch-677677ceb1a6-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/9745eb8f9ab2/launch-91275f4eff30.min.js"
+	}
+	],
+	"TL": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/71c950b4beb8/launch-e64af37ae7a3-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/71c950b4beb8/launch-34a18f18410d.min.js"
+	}
+	],
+	"TL_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/d5a301bf3118/launch-0eac6f98fa96-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/d5a301bf3118/launch-b9ef275e0643.min.js"
+	}
+	],
+	"s_GLOBAL_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/7902ac81799e/launch-b2da99cf383d-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/7902ac81799e/launch-a585f7a7f17b.min.js"
+	}
+	],
+	"GLOBAL_AppM_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/87887808e054/launch-ef17add27f89-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/87887808e054/launch-ecdf07b83a02.min.js"
+	}
+	],
+	"CONTENTS_AppM_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/a8091f263edf/launch-9c0df39f1fad-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/a8091f263edf/launch-fa2f6331cc01.min.js"
+	}
+	],
+	"TOP_AppM_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/df049bfa630f/launch-0d929d81ce12-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/df049bfa630f/launch-9591b9e39e86.min.js"
+	}
+	],
+	"a_GLOBAL_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/18620b489dc0/launch-367aba183cb0-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/18620b489dc0/launch-6e34d73d5ee6.min.js"
+	}
+	],
+	"GLOBAL_SP_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/a40f6eaace43/launch-4d2b504b3824-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/a40f6eaace43/launch-5b9e46e792c2.min.js"
+	}
+	],
+	"ENG_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/37c935a1c5a7/launch-555955ec0fb7-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/37c935a1c5a7/launch-5eeee045b4f0.min.js"
+	}
+	],
+	"ENG_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/eb5cf265dbc2/launch-a4d95dc408dd-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/eb5cf265dbc2/launch-04eb24443336.min.js"
+	}
+	],
+	"ENG_SP_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/0edac0ac30ad/launch-dfb36be2f0de-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/0edac0ac30ad/launch-6b140b44fb88.min.js"
+	}
+	],
+	"ENG": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/d4bc5386090f/launch-76533f24a7c8-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/d4bc5386090f/launch-60cb42635dd9.min.js"
+	}
+	],
+	"ASW_OTHER_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/63e473c39a25/launch-a564c7c34b59-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/63e473c39a25/launch-017f1aed8820.min.js"
+	}
+	],
+	"anamall": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/2486a070cf89/launch-d66231ee4646-staging.min.j",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/2486a070cf89/launch-5a533b28104f.min.js"
+	}
+	],
+	"furusato": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/35ee17c8df34/launch-463ca6ab60f4-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/35ee17c8df34/launch-c2427a6013b8.min.js"
+	}
+	],
+	"EXCONTENTS_AppM_SP": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/214b2b31b6bb/launch-ed51b145da34-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/214b2b31b6bb/launch-07b419ba9080.min.js"
+	}
+	],
+	"EXGLOBAL_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/3ffb0c3ab863/launch-cc32d269fcff-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/3ffb0c3ab863/launch-49bc3a39af12.min.js"
+	}
+	],
+	"SL_top_contents_AppM": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/7e081ce81caa/launch-dbfeb6b6fb7f-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/7e081ce81caa/launch-be94cdfea19f.min.js"
+	}
+	],
+	"astyle": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/9f97a250ed1b/launch-628a29ae3181-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/9f97a250ed1b/launch-7e2aee44dc23.min.js"
+	}
+	],
+	"ATENA": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/3f51ea0b62ed/launch-ad4fda0328e7-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/3f51ea0b62ed/launch-005f5e23c869.min.js"
+	}
+	],
+	"anamobile": [
+	{
+	"stg_url": "https://assets.adobedtm.com/99ab9d5e7462/167fde3306c2/launch-608627e31699-staging.min.js",
+	"prod_url": "https://assets.adobedtm.com/99ab9d5e7462/167fde3306c2/launch-88988ecdc438.min.js"
+	}
+	]
+}

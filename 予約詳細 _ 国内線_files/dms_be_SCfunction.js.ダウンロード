@@ -1,0 +1,45 @@
+/*===========================================================
+22-DM-010_ASW×flypeach空席照会連携のパーソナライズJS
+============================================================*/
+
+function dms_be_SCbackfunc(p_obj,p_fname,p_linkName,count){
+	if(typeof count === 'undefined'){count = 1;}
+
+	//Check
+	if(typeof s === 'undefined' || typeof s.tl !== 'function' || typeof setSiteVars !== 'function' ){
+		if(count >= 10){
+			console.log("sc_Timeout_dms_be");
+			return;
+		}
+		console.log("sc_reload_dms_be "+count+"/10");
+		setTimeout(function(){dms_be_SCbackfunc(p_obj,p_fname,p_linkName,++count)},1000);
+		return;
+	}
+
+	//OK
+	for(name in p_obj){
+		s[name] = p_obj[name];
+	}
+	if(p_fname == "scclick"){
+		s.prop13    = SiteCatalystCookie0;
+		s.prop14    = SiteCatalystDateTimeSec;
+	}
+	s.tl(this,'o',p_linkName);
+}
+
+function dms_be_SCClick (LinkName){
+	var obj = new Object;
+	obj.linkTrackVars='prop1,prop2,prop3,prop4,prop5,prop6,prop7,prop8,prop12,prop13,prop14,prop15,prop17,prop18,prop19,prop49,eVar1,eVar2,eVar3,eVar4,eVar5,eVar6,eVar7,eVar49,eVar55,eVar74,events,channel';
+	obj.prop7    = LinkName;
+	obj.eVar7    = LinkName;
+	dms_be_SCbackfunc(obj,'scclick',LinkName);
+}
+
+function dms_be_SCmini (LinkName) {
+	var infotag = LinkName;
+	var obj = new Object;
+	obj.linkTrackVars='prop1,prop2,prop3,prop4,prop5,prop6,prop7,prop8,prop12,prop13,prop14,prop15,prop17,prop18,prop19,prop49,eVar1,eVar2,eVar3,eVar4,eVar5,eVar6,eVar7,eVar49,eVar55,eVar74,events,channel';
+	obj.prop7 = infotag;
+	obj.eVar7 = infotag;
+	setTimeout(function(){dms_be_SCbackfunc(obj,'scmini',infotag);},1000);
+}

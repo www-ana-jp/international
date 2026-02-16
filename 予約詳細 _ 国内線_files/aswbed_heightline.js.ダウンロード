@@ -1,0 +1,173 @@
+/**
+ * @fileoverview 「aswbed_heightline.js」指定した要素の高さを揃える
+ *
+ * @require  jQuery1.8.3
+ * @version  0.01
+ * @update   2015/2/12
+ */
+
+
+/*--------------------------------------------------------------------------*
+ *
+ *  heightLine JavaScript Library beta4
+ *
+ *  MIT-style license.
+ *
+ *  2007 Kazuma Nishihata
+ *  http://www.webcreativepark.net
+ *
+ *--------------------------------------------------------------------------*/
+
+
+/** Aswbedオブジェクトの作成or参照 */
+var Aswbed = Aswbed || {};
+
+/**
+ * @namespace 指定した要素の高さを揃える処理を含めたオブジェクト
+ */
+Aswbed.HeightLine = function () {
+    'use strict';
+    return {};
+}();
+
+
+/**
+ * 指定した要素の高さを揃えるメソッド<br>
+ *
+ * 通信後に要素の高さを再設定する必要があるため、heightLine.jsの処理をAswedオブジェクトに内包したもの。<br>
+ * 上記仕様のため、heightLine.jsの上書き不可。
+ *
+ */
+Aswbed.HeightLine.update = function () {
+    'use strict';
+
+    this.className = 'heightLine';
+    this.parentClassName = 'heightLineParent';
+    var pattern = new RegExp(this.className + '-([a-zA-Z0-9-_]+)', 'i');
+    var objectClassName = [];
+    var objectAll = document.getElementsByTagName ? document.getElementsByTagName('*') : document.all;
+    var i, j;
+
+    for (i = 0; i < objectAll.length; i++) {
+        var classNameArray = objectAll[i].className.split(/\s+/);
+        for (var j = 0; j < classNameArray.length; j++) {
+            if (classNameArray[j] === this.className) {
+                if (!objectClassName['main CN']) {
+                    objectClassName['main CN'] = [];
+                }
+                objectClassName['main CN'].push(objectAll[i]);
+                break;
+            } else if (classNameArray[j] === this.parentClassName) {
+                if (!objectClassName['parent CN']) {
+                    objectClassName['parent CN'] = [];
+                }
+                objectClassName['parent CN'].push(objectAll[i]);
+                break;
+            } else if (classNameArray[j].match(pattern)) {
+                var OCN = classNameArray[j].match(pattern);
+                if (!objectClassName[OCN]) {
+                    objectClassName[OCN] = [];
+                }
+                objectClassName[OCN].push(objectAll[i]);
+                break;
+            }
+        }
+    }
+
+    var divisionTagElement = document.createElement('div');
+    var textNode = document.createTextNode('S');
+    divisionTagElement.appendChild(textNode);
+    divisionTagElement.style.visibility = 'hidden';
+    divisionTagElement.style.position = 'absolute';
+    divisionTagElement.style.top = '0';
+    document.body.appendChild(divisionTagElement);
+    var divisionTagHeight = divisionTagElement.offsetHeight;
+    var newheight;
+    var styles;
+    var max_height;
+
+
+    var changeBoxSize = function () {
+        'use strict';
+        for (var key in objectClassName) {
+            if (objectClassName.hasOwnProperty(key)) {
+                if (key == 'parent CN') {
+                    for (i = 0; i < objectClassName[key].length; i++) {
+                        max_height = 0;
+                        var CCN = objectClassName[key][i].childNodes;
+                        for (j = 0; j < CCN.length; j++) {
+                            if (CCN[j] && CCN[j].nodeType === 1) {
+                                CCN[j].style.height = 'auto';
+                                max_height = max_height > CCN[j].offsetHeight ? max_height : CCN[j].offsetHeight;
+                            }
+                        }
+                        for (j = 0; j < CCN.length; j++) {
+                            if (CCN[j].style) {
+                                styles = CCN[j].currentStyle || document.defaultView.getComputedStyle(CCN[j], '');
+                                newheight = max_height;
+                                if (styles.paddingTop) {
+                                    newheight -= styles.paddingTop.replace('px', '');
+                                }
+                                if (styles.paddingBottom) {
+                                    newheight -= styles.paddingBottom.replace('px', '');
+                                }
+                                if (styles.borderTopWidth && styles.borderTopWidth !== 'medium') {
+                                    newheight -= styles.borderTopWidth.replace('px', '');
+                                }
+                                if (styles.borderBottomWidth && styles.borderBottomWidth !== 'medium') {
+                                    newheight -= styles.borderBottomWidth.replace('px', '');
+                                }
+                                CCN[j].style.height = newheight + 'px';
+                            }
+                        }
+                    }
+                } else {
+                    max_height = 0;
+                    for (i = 0; i < objectClassName[key].length; i++) {
+                        objectClassName[key][i].style.height = 'auto';
+                        max_height = max_height > objectClassName[key][i].offsetHeight ? max_height : objectClassName[key][i].offsetHeight;
+                    }
+                    for (i = 0; i < objectClassName[key].length; i++) {
+                        if (objectClassName[key][i].style) {
+                            styles = objectClassName[key][i].currentStyle || document.defaultView.getComputedStyle(objectClassName[key][i], '');
+                            newheight = max_height;
+                            if (styles.paddingTop) {
+                                newheight -= styles.paddingTop.replace('px', '');
+                            }
+                            if (styles.paddingBottom) {
+                                newheight -= styles.paddingBottom.replace('px', '');
+                            }
+                            if (styles.borderTopWidth && styles.borderTopWidth !== 'medium') {
+                                newheight -= styles.borderTopWidth.replace('px', '');
+                            }
+                            if (styles.borderBottomWidth && styles.borderBottomWidth !== 'medium') {
+                                newheight -= styles.borderBottomWidth.replace('px', '');
+                            }
+                            objectClassName[key][i].style.height = newheight + 'px';
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    var checkBoxSize = function () {
+        'use strict';
+        if (divisionTagHeight !== divisionTagElement.offsetHeight) {
+            changeBoxSize();
+            divisionTagHeight = divisionTagElement.offsetHeight;
+        }
+    };
+    changeBoxSize();
+    $(window).resize(function () {
+        changeBoxSize();
+    });
+};
+
+//【実行文】onloadのタイミングで、一度実行する
+$(function () {
+    'use strict';
+    $(window).on('load', function () {
+        Aswbed.HeightLine.update();
+    });
+});

@@ -1,0 +1,39 @@
+var userAgent = window.navigator.userAgent.toLowerCase();
+var appVersion = window.navigator.appVersion.toLowerCase();
+if (userAgent.indexOf("msie") == -1 || (appVersion.indexOf("msie 6.") == -1 && appVersion.indexOf("msie 7.") == -1)){
+	if (! window.jQuery) document.write('<script type="text/javascript" src="//www.ana.co.jp/common-ver1/js/jquery-1.7.2.min.js"></script>');
+	/* SDK対応のためコメント */
+	//document.write('<script src="//assets.adobedtm.com/99ab9d5e7462/c059c0129490/launch-c674617ff237.min.js"></script>');
+	/* AAM停止対応のためコメント */
+//	document.write('<script type="text/javascript" src="//www.ana.co.jp/common/js/target/adobeAM_API_call.js"></script>');
+	if(userAgent.indexOf("trident") == -1){
+		document.write('<script type="text/javascript" src="https://www.ana.co.jp/common/js/target/mboxConversion.js"></script>');
+//IE11[mbox.js除外] 2021-06-15
+//	}else{
+//		document.write('<script type="text/javascript" src="https://www.ana.co.jp/common/js/target/mbox.js"></script>');
+//	}
+	}
+
+	function mboxCreate() {
+	}
+
+	function mboxDefine() {
+	}
+
+	function mboxUpdate() {
+	}
+	function aam_tnt_cb() {
+	    if (typeof (arguments[0].stuff) != "undefined" && arguments[0].stuff != "") {
+	        for (var i = 0; i < arguments[0].stuff.length; i++) {
+	            if (arguments[0].stuff[i].cn == "aam_tnt") {
+	                if (arguments[0].stuff[0].cv.split(",")) {
+	                    window.demdex_raw_str = arguments[0].stuff[0].cv;
+	                    window.demdex_raw = arguments[0].stuff[i].cv.split(",");
+	                }
+	            }
+	        }
+	    }
+	}
+}else{
+	mboxCreate = function(qb){return false;};
+}

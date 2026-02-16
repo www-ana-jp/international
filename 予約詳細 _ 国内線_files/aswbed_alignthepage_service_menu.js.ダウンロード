@@ -1,0 +1,18 @@
+/**
+ * @fileoverview 【実行文】「予約詳細」（00010）SP版で「サービス」「宿泊エリア/サポート/介護割引」の表示・非表示を切り替える処理
+ *
+ * @require  jQuery1.8.3
+ * @require  aswbed_alignthepage_utility.js
+ * @version  0.01
+ * @update   2015/2/12
+ */
+
+//【実行文】
+$(function () {
+    'use strict';
+    
+    $('.spCloseContents .spToggle a').on('click', function () {
+        Aswbed.alignThePageWhenSwitchingDisplay($(this), $(this).parent().prev());
+        Aswbed.switchDisplay($(this), [$(this).parent().next()]);
+    });
+});

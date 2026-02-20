@@ -1,0 +1,148 @@
+/**
+ * @fileoverview 【ユーティリティ】【実行文】input要素のフォーカス処理や、placeholderの設定をいれる
+ *
+ * @require  jQuery1.8.3
+ * @version  0.01
+ * @update   2015/3/17
+ */
+
+
+/**
+ *  @namespace InputElementは入力フォーム用の装飾に関する命令を使用する名前空間
+ **/
+Aswbed.InputElement = {};
+
+/**
+ * form要素にfocusした時に「focus」クラスを設定する(汎用)<br>
+ *
+ * デザイン上、フォーカス時に青い枠を設定する
+ *
+ * @param {String} 対象のjQueryセレクタ名
+ */
+Aswbed.InputElement.applyFocusClass = function (selector) {
+    'use strict';
+
+    var $selector = $(selector);
+    $selector.focus(function () {
+        $(this).addClass('focus');
+    });
+    $selector.blur(function () {
+        $(this).removeClass('focus');
+    });
+};
+
+/**
+ * placeholder対策メソッド(汎用)<br>
+ *
+ * <br>
+ * placeholder属性がついているものに、focusイベントとblurイベントを設定し、そのタイミングで値がなければ、placeholder内の文字を設定する。<br>
+ * submitのタイミングで、placeholderの値が、値が無い時の表記だったら、内容を消すスクリプトを設定している。
+ *
+ */
+Aswbed.InputElement.applyPlaceholder = function () {
+    'use strict';
+
+    var input;
+    $('[placeholder]').each(function () {
+        input = $(this);
+        if ($(this).attr('maxlength')) {
+            $(this).attr('data-maxLength', $(this).attr('maxlength'));
+        }
+    });
+
+    $('[placeholder]').focus(function () {
+        $(this).css('color', '#252525');
+        $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        input = $(this);
+        if (input.val() === input.attr('placeholder')) {
+            input.val('');
+        }
+        if ($(this).attr('data-maxLength')) {
+            $(this).attr('maxlength', $(this).attr('data-maxLength'));
+        }
+    }).blur(function () {
+        $(this).css('color', '#252525');
+        $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        input = $(this);
+        if (input.val() === '' || input.val() === input.attr('placeholder')) {
+            input.val(input.attr('placeholder'));
+            input.addClass('placeholder');
+            $(this).css('color', '#676767');
+            $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        }
+        if (input.attr('disabled')) {
+            $(this).css('color', '');
+            $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        }
+        if ($(this).attr('data-maxLength')) {
+            $(this).removeAttr('maxlength');
+        }
+    }).change(function () {
+        $(this).css('color', '#252525');
+        $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+
+        input = $(this);
+        if (input.val() === '' || input.val() === input.attr('placeholder')) {
+            input.val(input.attr('placeholder'));
+            input.addClass('placeholder');
+            $(this).css('color', '#676767');
+            $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        }
+
+        if (input.attr('disabled')) {
+            $(this).css('color', '');
+            $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        }
+    }).blur().parents('form').submit(function () {
+        $(this).find('[placeholder]').each(function () {
+            input = $(this);
+            if (input.val() === input.attr('placeholder')) {
+                input.val('');
+            }
+        });
+    });
+
+    $('[placeholder]').each(function () {
+        $(this).css('color', '#252525');
+        $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        input = $(this);
+        if (input.val() === '' || input.val() == input.attr('placeholder')) {
+            input.val(input.attr('placeholder'));
+            input.addClass('placeholder');
+            $(this).css('color', '#676767');
+            $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        }
+        if (input.attr('disabled')) {
+            $(this).css('color', '');
+            $('.searchForm [placeholder],.searchFormStyle01 [placeholder]').css('color', '');
+        }
+    });
+};
+
+
+//【実行分】テキスト要素の設定を行う
+$(function () {
+    'use strict';
+
+    Aswbed.InputElement.applyFocusClass('input:text');
+    Aswbed.InputElement.applyFocusClass('input:password');
+    Aswbed.InputElement.applyFocusClass('select');
+
+    //InternetExplorerでは9以下でplaceholderが使用できないため、IE限定とする。
+    if (Aswbed.CommonContext.UserAgent.getBrowserType() === Aswbed.BrowserType.IE) {
+        Aswbed.InputElement.applyPlaceholder();
+    }
+});
+
+//【実行文】テキストフィールドにフォーカスがあたっている時に、確定、決定ボタン、Enterキーで送信をさせない
+$(function () {
+    'use strict';
+
+    $('input:text').keypress(function (e) {
+        if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
+            return false;
+        } else {
+            return true;
+        }
+    });
+});
